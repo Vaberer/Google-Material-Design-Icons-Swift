@@ -1,92 +1,6 @@
 import Foundation
 import UIKit
 
-private struct GMDStruct {
-    
-    static let FileFontName = "GMDIcons"
-    static let FontName = "MaterialIcons-Regular"
-    static let ErrorAnnounce = "****** GOOGLE MATERIAL DESIGN ICONS SWIFT - Google Material Design icons font not found in the bundle or not associated with Info.plist when manual installation was performed. ******"
-}
-
-
-private class FontLoader {
-    
-    struct Static {
-        static var onceToken : dispatch_once_t = 0
-    }
-    
-    static func loadFontIfNeeded() {
-        if (UIFont.fontNamesForFamilyName(GMDStruct.FontName).count == 0) {
-            
-            dispatch_once(&Static.onceToken) {
-                let bundle = NSBundle(forClass: FontLoader.self)
-                var fontURL = NSURL()
-                let identifier = bundle.bundleIdentifier
-                
-                if identifier?.hasPrefix("org.cocoapods") == true {
-                    
-                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf", subdirectory: "Google-Material-Design-Icons-Swift.bundle")!
-                } else {
-                    
-                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf")!
-                }
-                let data = NSData(contentsOfURL: fontURL)!
-                
-                let provider = CGDataProviderCreateWithCFData(data)
-                let font = CGFontCreateWithDataProvider(provider)!
-                
-                var error: Unmanaged<CFError>?
-                if !CTFontManagerRegisterGraphicsFont(font, &error) {
-                    
-                    let errorDescription: CFStringRef = CFErrorCopyDescription(error!.takeUnretainedValue())
-                    let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
-                    NSException(name: NSInternalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
-                }
-            }
-        }
-    }
-}
-
-public extension UIBarButtonItem {
-    
-    /**
-    To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
-    */
-    func setGMDIcon(icon: GMDType, iconSize: CGFloat) {
-        
-        FontLoader.loadFontIfNeeded()
-        let font = UIFont(name: GMDStruct.FontName, size: iconSize)
-        
-        assert(font != nil, GMDStruct.ErrorAnnounce)
-        setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
-        title = icon.text
-    }
-    
-    /**
-    To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
-    */
-    var GMDIcon: GMDType? {
-        set {
-            
-            FontLoader.loadFontIfNeeded()
-            let font = UIFont(name: GMDStruct.FontName, size: 23)
-            assert(font != nil,GMDStruct.ErrorAnnounce)
-            setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
-            title = newValue?.text
-        }
-        
-        get {
-            if let title = title {
-                
-                if let index =  GMDIcons.indexOf(title) {
-                    return GMDType(rawValue: index)
-                }
-            }
-            return nil
-        }
-    }
-}
-
 public extension UIButton {
     
     /**
@@ -135,6 +49,94 @@ public extension UILabel {
         }
     }
 }
+
+public extension UIBarButtonItem {
+    
+    /**
+    To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
+    */
+    func setGMDIcon(icon: GMDType, iconSize: CGFloat) {
+        
+        FontLoader.loadFontIfNeeded()
+        let font = UIFont(name: GMDStruct.FontName, size: iconSize)
+        
+        assert(font != nil, GMDStruct.ErrorAnnounce)
+        setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
+        title = icon.text
+    }
+    
+    /**
+    To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
+    */
+    var GMDIcon: GMDType? {
+        set {
+            
+            FontLoader.loadFontIfNeeded()
+            let font = UIFont(name: GMDStruct.FontName, size: 23)
+            assert(font != nil,GMDStruct.ErrorAnnounce)
+            setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
+            title = newValue?.text
+        }
+        
+        get {
+            if let title = title {
+                
+                if let index =  GMDIcons.indexOf(title) {
+                    return GMDType(rawValue: index)
+                }
+            }
+            return nil
+        }
+    }
+}
+
+private struct GMDStruct {
+    
+    static let FileFontName = "GMDIcons"
+    static let FontName = "MaterialIcons-Regular"
+    static let ErrorAnnounce = "****** GOOGLE MATERIAL DESIGN ICONS SWIFT - Google Material Design icons font not found in the bundle or not associated with Info.plist when manual installation was performed. ******"
+}
+
+
+private class FontLoader {
+    
+    struct Static {
+        static var onceToken : dispatch_once_t = 0
+    }
+    
+    static func loadFontIfNeeded() {
+        if (UIFont.fontNamesForFamilyName(GMDStruct.FontName).count == 0) {
+            
+            dispatch_once(&Static.onceToken) {
+                let bundle = NSBundle(forClass: FontLoader.self)
+                var fontURL = NSURL()
+                let identifier = bundle.bundleIdentifier
+                
+                if identifier?.hasPrefix("org.cocoapods") == true {
+                    
+                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf", subdirectory: "Google-Material-Design-Icons-Swift.bundle")!
+                } else {
+                    
+                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf")!
+                }
+                let data = NSData(contentsOfURL: fontURL)!
+                
+                let provider = CGDataProviderCreateWithCFData(data)
+                let font = CGFontCreateWithDataProvider(provider)!
+                
+                var error: Unmanaged<CFError>?
+                if !CTFontManagerRegisterGraphicsFont(font, &error) {
+                    
+                    let errorDescription: CFStringRef = CFErrorCopyDescription(error!.takeUnretainedValue())
+                    let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
+                    NSException(name: NSInternalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
+                }
+            }
+        }
+    }
+}
+
+
 
 /**
 List of all icons in Google Material Design Font

@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         bGithub.GMDIcon = GMDType.GMDPublic
         bTwitter.GMDIcon = GMDType.GMDPerson
-        
+
 
     
     }
