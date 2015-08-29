@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name = 'Google-Material-Design-Icons-Swift'
   s.version = '1.0.0'
   s.license = 'MIT'
-  s.summary = 'Google Material Design Icons Library for iOS.'
+  s.summary = 'Google Material Design Icons Library for iOS'
   s.homepage = 'https://github.com/Vaberer/Google-Material-Design-Icons-Swift'
   s.screenshots = "https://raw.githubusercontent.com/Vaberer/Google-Material-Design-Icons-Swift/master/resources/image1.png"
   s.social_media_url = 'http://twitter.com/vaberer'
