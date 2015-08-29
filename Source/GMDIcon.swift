@@ -50,7 +50,7 @@ private class FontLoader {
 public extension UIBarButtonItem {
     
     /**
-    To set an icon, use i.e. `barName.FAIcon = FAType.FAGithub`
+    To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
     */
     func setGMDIcon(icon: GMDType, iconSize: CGFloat) {
         
@@ -63,7 +63,7 @@ public extension UIBarButtonItem {
     }
     
     /**
-    To set an icon, use i.e. `barName.setFAIcon(FAType.FAGithub, iconSize: 35)`
+    To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
     */
     var GMDIcon: GMDType? {
         set {
@@ -90,9 +90,9 @@ public extension UIBarButtonItem {
 public extension UIButton {
     
     /**
-    To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.FAGithub, forState: .Normal)`
+    To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
     */
-    func setFAIcon(icon: GMDType, forState state: UIControlState) {
+    func setGMDIcon(icon: GMDType, forState state: UIControlState) {
         
         if let titleLabel = titleLabel {
             

@@ -40,11 +40,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return controller
         })()
         
-//        bGithub.GMDIcon = GMDType.GMDPublic
-//        bTwitter.GMDIcon = GMDType.GMDPerson
+        bGithub.GMDIcon = GMDType.GMDPublic
+        bTwitter.GMDIcon = GMDType.GMDPerson
         
-        bGithub.setGMDIcon(GMDType.GMDPublic, iconSize: 35)
-        bTwitter.setGMDIcon(GMDType.GMDPerson, iconSize: 35)
+
     
     }
     
