@@ -7,7 +7,7 @@ I like &#9733;. Do not forget to &#9733; this super convenient library.
 
 
 
-#There is also a very popular [Font Awesome Library](https://github.com/Vaberer/Font-Awesome-Swift) which you will love!
+#There is also a very popular [Font Awesome](https://github.com/Vaberer/Font-Awesome-Swift) library which you will love!
 
 
 
