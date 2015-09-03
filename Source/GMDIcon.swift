@@ -41,7 +41,8 @@ public extension UILabel {
         get {
             if let text = text {
                 
-                if let index =  GMDIcons.indexOf(text) {
+                
+                if let index =  find(GMDIcons, text) {
                     return GMDType(rawValue: index)
                 }
             }
@@ -81,7 +82,7 @@ public extension UIBarButtonItem {
         get {
             if let title = title {
                 
-                if let index =  GMDIcons.indexOf(title) {
+                if let index =  find(GMDIcons, title) {
                     return GMDType(rawValue: index)
                 }
             }

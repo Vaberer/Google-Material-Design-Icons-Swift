@@ -55,7 +55,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         c.lFont.text = resultSearchController.active ? filteredData[indexPath.row] : helper[indexPath.row]
         
-        let icon = resultSearchController.active ? GMDType(rawValue: helper.indexOf(filteredData[indexPath.row])!) : GMDType(rawValue: indexPath.row)
+        let icon = resultSearchController.active ? GMDType(rawValue: find(helper, filteredData[indexPath.row])!) : GMDType(rawValue: indexPath.row)
         c.lSmall.GMDIcon = icon
         c.lMedium.GMDIcon = icon
         c.lBig.GMDIcon = icon
