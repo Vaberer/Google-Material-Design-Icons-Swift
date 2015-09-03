@@ -55,7 +55,7 @@ Do not forget to import to your swift files where you want to use this library:
 import Google_Material_Design_Icons_Swift
 ```
 
-### To use Font Awesome in Swift 2:
+### To use Font Awesome in Swift 1.2:
 ```pod 'Google-Material-Design-Icons-Swift', :git => 'https://github.com/Vaberer/Google-Material-Design-Icons-Swift.git', :branch => 'swift1.2'```
 
 ### Manually
