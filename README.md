@@ -20,7 +20,7 @@ Google Material Design Icons Swift library for iOS. No image icons any more. Usi
 
 ## Requirements
 
-- iOS 9.0+ 
+- iOS 8.0+ 
 - Xcode 7
 
 ## Installation
