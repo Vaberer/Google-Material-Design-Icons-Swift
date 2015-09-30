@@ -20,7 +20,7 @@ Google Material Design Icons Swift library for iOS. No image icons any more. Usi
 
 ## Requirements
 
-- iOS 9.0+ 
+- iOS 8.0+ 
 - Xcode 7
 
 ## Installation
@@ -54,6 +54,9 @@ Do not forget to import to your swift files where you want to use this library:
 ```swift
 import Google_Material_Design_Icons_Swift
 ```
+
+### To use Font Awesome in Swift 1.2:
+```pod 'Google-Material-Design-Icons-Swift', :git => 'https://github.com/Vaberer/Google-Material-Design-Icons-Swift.git', :branch => 'swift1.2'```
 
 ### Manually
 
