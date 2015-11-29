@@ -50,7 +50,7 @@ public extension UILabel {
     }
 }
 
-public extension UIBarButtonItem {
+public extension UIBarItem {
     
     /**
     To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
