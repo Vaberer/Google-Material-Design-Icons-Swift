@@ -12,9 +12,9 @@
 		4E19E0151B919AFC00825B73 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0131B919AFC00825B73 /* Main.storyboard */; };
 		4E19E0171B919AFC00825B73 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0161B919AFC00825B73 /* Assets.xcassets */; };
 		4E19E01A1B919AFC00825B73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0181B919AFC00825B73 /* LaunchScreen.storyboard */; };
-		4E19E0241B919D5400825B73 /* IconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0231B919D5400825B73 /* IconCell.swift */; settings = {ASSET_TAGS = (); }; };
-		4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0251B91B34800825B73 /* GMDIcon.swift */; settings = {ASSET_TAGS = (); }; };
-		4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0271B91B35E00825B73 /* GMDIcons.ttf */; settings = {ASSET_TAGS = (); }; };
+		4E19E0241B919D5400825B73 /* IconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0231B919D5400825B73 /* IconCell.swift */; };
+		4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0251B91B34800825B73 /* GMDIcon.swift */; };
+		4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0271B91B35E00825B73 /* GMDIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -274,6 +274,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "vaberer.GMD-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -286,6 +287,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "vaberer.GMD-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
