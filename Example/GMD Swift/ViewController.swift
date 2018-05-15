@@ -33,15 +33,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             controller.delegate = self
             controller.dimsBackgroundDuringPresentation = false
             controller.searchBar.sizeToFit()
-            controller.searchBar.searchBarStyle = .Minimal
-            controller.searchBar.barTintColor = UIColor.blueColor()
+            controller.searchBar.searchBarStyle = .minimal
+            controller.searchBar.barTintColor = UIColor.blue
             controller.searchBar.placeholder = "Type Icon Name"
             self.tableView.tableHeaderView = controller.searchBar
             return controller
         })()
         
-        bGithub.GMDIcon = GMDType.GMDPublic
-        bTwitter.GMDIcon = GMDType.GMDPerson
+        bGithub.GMDIcon = GMDType.gmdPublic
+        bTwitter.GMDIcon = GMDType.gmdPerson
 
 
     
@@ -49,13 +49,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     //MARK: UITableView
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let c = tableView.dequeueReusableCellWithIdentifier("IconCell") as! IconCell
+        let c = tableView.dequeueReusableCell(withIdentifier: "IconCell") as! IconCell
         
-        c.lFont.text = resultSearchController.active ? filteredData[indexPath.row] : helper[indexPath.row]
+        c.lFont.text = resultSearchController.isActive ? filteredData[indexPath.row] : helper[indexPath.row]
         
-        let icon = resultSearchController.active ? GMDType(rawValue: helper.indexOf(filteredData[indexPath.row])!) : GMDType(rawValue: indexPath.row)
+        let icon = resultSearchController.isActive ? GMDType(rawValue: helper.index(of: filteredData[indexPath.row])!) : GMDType(rawValue: indexPath.row)
         c.lSmall.GMDIcon = icon
         c.lMedium.GMDIcon = icon
         c.lBig.GMDIcon = icon
@@ -63,43 +63,43 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return c
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return resultSearchController.active ? filteredData.count :  GMDType.count
+        return resultSearchController.isActive ? filteredData.count :  GMDType.count
     }
     
     
     //MARK: Search
-    func updateSearchResultsForSearchController(searchController: UISearchController)
+    func updateSearchResults(for searchController: UISearchController)
     {
         filteredData = []
-        filterContentForSearchText(searchController.searchBar.text!.lowercaseString)
+        filterContentForSearchText(searchController.searchBar.text!.lowercased())
         self.tableView.reloadData()
     }
     
-    @IBAction func bGithubPressed(sender: UIBarButtonItem) {
+    @IBAction func bGithubPressed(_ sender: UIBarButtonItem) {
         
-        if let requestUrl = NSURL(string: "https://github.com/Vaberer/Google-Material-Design-Icons-Swift") {
-            UIApplication.sharedApplication().openURL(requestUrl)
+        if let requestUrl = URL(string: "https://github.com/Vaberer/Google-Material-Design-Icons-Swift") {
+            UIApplication.shared.openURL(requestUrl)
         }
     }
     
-    @IBAction func bTwitterPressed(sender: UIBarButtonItem) {
+    @IBAction func bTwitterPressed(_ sender: UIBarButtonItem) {
         
-        if let twitterURL = NSURL(string: "twitter://user?id=2271666416") {
+        if let twitterURL = URL(string: "twitter://user?id=2271666416") {
             
-            if UIApplication.sharedApplication().canOpenURL(twitterURL) {
+            if UIApplication.shared.canOpenURL(twitterURL) {
                 
-                UIApplication.sharedApplication().openURL(twitterURL)
+                UIApplication.shared.openURL(twitterURL)
             }
         }
     }
     
     //MARK: Helpers
-    func filterContentForSearchText(searchText: String) {
+    func filterContentForSearchText(_ searchText: String) {
         
         for f in helper {
-            if f.lowercaseString.rangeOfString(searchText.lowercaseString) != nil {
+            if f.lowercased().range(of: searchText.lowercased()) != nil {
                 filteredData.append(f)
             }
         }

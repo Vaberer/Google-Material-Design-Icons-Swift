@@ -12,9 +12,9 @@
 		4E19E0151B919AFC00825B73 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0131B919AFC00825B73 /* Main.storyboard */; };
 		4E19E0171B919AFC00825B73 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0161B919AFC00825B73 /* Assets.xcassets */; };
 		4E19E01A1B919AFC00825B73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0181B919AFC00825B73 /* LaunchScreen.storyboard */; };
-		4E19E0241B919D5400825B73 /* IconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0231B919D5400825B73 /* IconCell.swift */; settings = {ASSET_TAGS = (); }; };
-		4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0251B91B34800825B73 /* GMDIcon.swift */; settings = {ASSET_TAGS = (); }; };
-		4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0271B91B35E00825B73 /* GMDIcons.ttf */; settings = {ASSET_TAGS = (); }; };
+		4E19E0241B919D5400825B73 /* IconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0231B919D5400825B73 /* IconCell.swift */; };
+		4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0251B91B34800825B73 /* GMDIcon.swift */; };
+		4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0271B91B35E00825B73 /* GMDIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,11 +108,12 @@
 		4E19E0041B919AFC00825B73 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Patrik Vaberer";
 				TargetAttributes = {
 					4E19E00B1B919AFC00825B73 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0920;
 					};
 				};
 			};
@@ -190,13 +191,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -235,13 +244,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -260,6 +277,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -274,6 +292,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "vaberer.GMD-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -286,6 +306,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "vaberer.GMD-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
