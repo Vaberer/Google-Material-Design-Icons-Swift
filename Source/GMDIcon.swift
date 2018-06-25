@@ -150,7 +150,7 @@ public enum GMDType: Int {
         return GMDIcons.count
     }
     
-    var text: String? {
+    public var text: String? {
         
         return GMDIcons[rawValue]
     }
