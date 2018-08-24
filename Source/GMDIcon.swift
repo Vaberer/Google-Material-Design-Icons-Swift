@@ -6,12 +6,12 @@ public extension UIButton {
     /**
     To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
     */
-    func setGMDIcon(_ icon: GMDType, forState state: UIControlState) {
+    func setGMDIcon(_ icon: GMDType, forState state: UIControlState = .normal, fontSize:CGFloat? = nil) {
         
         if let titleLabel = titleLabel {
             
             FontLoader.loadFontIfNeeded()
-            let font = UIFont(name: GMDStruct.FontName, size: titleLabel.font.pointSize)
+            let font = UIFont(name: GMDStruct.FontName, size: fontSize ?? titleLabel.font.pointSize)
             assert(font != nil, GMDStruct.ErrorAnnounce)
             titleLabel.font = font!
             setTitle(icon.text, for: state)
