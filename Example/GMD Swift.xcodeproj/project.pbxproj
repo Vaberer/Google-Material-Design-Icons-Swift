@@ -69,7 +69,6 @@
 				4E19E0221B919C3600825B73 /* Source - Google Material Icons Swift */,
 				D44CBB242130628E002741C7 /* CaseGenerator.swift */,
 				4E19E00F1B919AFC00825B73 /* AppDelegate.swift */,
-				D4817F7D21304D2D005F9950 /* EnumCollection.swift */,
 				4E19E0231B919D5400825B73 /* IconCell.swift */,
 				4E19E0111B919AFC00825B73 /* ViewController.swift */,
 				4E19E0131B919AFC00825B73 /* Main.storyboard */,
@@ -85,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				4E19E0251B91B34800825B73 /* GMDIcon.swift */,
+				D4817F7D21304D2D005F9950 /* EnumCollection.swift */,
 				4E19E0271B91B35E00825B73 /* GMDIcons.ttf */,
 			);
 			name = "Source - Google Material Icons Swift";
