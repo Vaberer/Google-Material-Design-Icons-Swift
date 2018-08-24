@@ -1,7 +1,13 @@
 # Google Material Design Icons Swift
+
+Forked from original project by @vaberer
+
+Updated for Swift 4
+Various convenience methods updated to make them even more convenient
+
 ![Font Awesome Swift](https://github.com/Vaberer/Font-Awesome-Swift/blob/master/resources/opensource_matters.png)
 
-Follow me: [@vaberer](https://twitter.com/vaberer)
+Originally by: [@vaberer](https://twitter.com/vaberer)
 
 I like &#9733;. Do not forget to &#9733; this super convenient library.
 
@@ -35,7 +41,7 @@ CocoaPods 0.36 adds supports for Swift and embedded frameworks. You can install 
 $ gem install cocoapods
 ```
 
-To integrate Google Material Design Icons Swifr into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate Google Material Design Icons Swift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -55,8 +61,6 @@ Do not forget to import to your swift files where you want to use this library:
 import Google_Material_Design_Icons_Swift
 ```
 
-### To use Font Awesome in Swift 1.2:
-```pod 'Google-Material-Design-Icons-Swift', :git => 'https://github.com/Vaberer/Google-Material-Design-Icons-Swift.git', :branch => 'swift1.2'```
 
 ### Manually
 
@@ -75,31 +79,28 @@ Super easy way how to add an icon.
 
 ### UILabel
 ```Swift
-    labelName.GMDIcon = GMDType.GMDPublic
-    
-    //or if you want to set an icon size, use:
-    labelName.setGMDIcon(GMDType.GMDPublic, iconSize: 30)
+    labelName.GMDIcon = .gmdPublic
     
     labelName.textColor = UIColor.redColor()
 ```
 
 ### UIButton
 ```Swift
-    buttonName.setGMDIcon(GMDType.GMDPublic, forState: .Normal)
+    buttonName.setGMDIcon(.gmdPublic)
     
-    //or if you want to set an icon size, use:
-    buttonName.setGMDIcon(GMDType.GMDPublic, iconSize: 35, forState: .Normal)
+    //or if you want to set an icon size and/or specify the state, use:
+    buttonName.setGMDIcon(.gmdPublic, forState: .highlighted, iconSize: 30)
     
-    buttonName.setTitleColor(UIColor.redColor(), forState: .Normal)
+    buttonName.setTitleColor(UIColor.redColor(), forState: .normal)
 ```
 
 ### UIBarButtonItem
 ```Swift
     //Standard font size
-    barName.GMDIcon = GMDType.GMDPublic
+    barName.GMDIcon = .gmdPublic
   
     //Custom font size
-    barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)
+    barName.setGMDIcon(.gmdPublic, iconSize: 35)
     
     barName.tintColor = UIColor.redColor()
 ```
