@@ -2,8 +2,16 @@
 
 Forked from original project by @vaberer
 
-Updated for Swift 4
-Various convenience methods updated to make them even more convenient
+Updated for Swift 4 and rewritten to simplify the code and make it easier to update
+
+The code now lists all icons for the 3.0.1 release, and includes the updated font file
+
+However - updating the code points is a manual process - so most new icons are still commented out.
+If you want a new icon, you just have to find and update the codepoint. See instructions in the demo project UpdatingNotes.txt on how to do that.
+
+
+
+Various convenience methods have been updated to make them even more convenient.
 
 ![Font Awesome Swift](https://github.com/Vaberer/Font-Awesome-Swift/blob/master/resources/opensource_matters.png)
 
@@ -26,7 +34,7 @@ Google Material Design Icons Swift library for iOS. No image icons any more. Usi
 
 ## Requirements
 
-- iOS 8.0+ 
+- iOS 8.0+
 - Xcode 7
 
 ## Installation
@@ -80,17 +88,17 @@ Super easy way how to add an icon.
 ### UILabel
 ```Swift
     labelName.GMDIcon = .gmdPublic
-    
+
     labelName.textColor = UIColor.redColor()
 ```
 
 ### UIButton
 ```Swift
     buttonName.setGMDIcon(.gmdPublic)
-    
+
     //or if you want to set an icon size and/or specify the state, use:
     buttonName.setGMDIcon(.gmdPublic, forState: .highlighted, iconSize: 30)
-    
+
     buttonName.setTitleColor(UIColor.redColor(), forState: .normal)
 ```
 
@@ -98,10 +106,10 @@ Super easy way how to add an icon.
 ```Swift
     //Standard font size
     barName.GMDIcon = .gmdPublic
-  
+
     //Custom font size
     barName.setGMDIcon(.gmdPublic, iconSize: 35)
-    
+
     barName.tintColor = UIColor.redColor()
 ```
 
