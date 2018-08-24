@@ -15,6 +15,8 @@
 		4E19E0241B919D5400825B73 /* IconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0231B919D5400825B73 /* IconCell.swift */; };
 		4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E19E0251B91B34800825B73 /* GMDIcon.swift */; };
 		4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E19E0271B91B35E00825B73 /* GMDIcons.ttf */; };
+		D44CBB23213061BE002741C7 /* UpdatingNotes.txt in Resources */ = {isa = PBXBuildFile; fileRef = D44CBB22213061BE002741C7 /* UpdatingNotes.txt */; };
+		D44CBB252130628E002741C7 /* CaseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44CBB242130628E002741C7 /* CaseGenerator.swift */; };
 		D4817F7E21304D2D005F9950 /* EnumCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4817F7D21304D2D005F9950 /* EnumCollection.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +31,8 @@
 		4E19E0231B919D5400825B73 /* IconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconCell.swift; sourceTree = "<group>"; };
 		4E19E0251B91B34800825B73 /* GMDIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMDIcon.swift; sourceTree = "<group>"; };
 		4E19E0271B91B35E00825B73 /* GMDIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GMDIcons.ttf; sourceTree = "<group>"; };
+		D44CBB22213061BE002741C7 /* UpdatingNotes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = UpdatingNotes.txt; sourceTree = "<group>"; };
+		D44CBB242130628E002741C7 /* CaseGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseGenerator.swift; sourceTree = "<group>"; };
 		D4817F7D21304D2D005F9950 /* EnumCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -63,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				4E19E0221B919C3600825B73 /* Source - Google Material Icons Swift */,
+				D44CBB242130628E002741C7 /* CaseGenerator.swift */,
 				4E19E00F1B919AFC00825B73 /* AppDelegate.swift */,
 				D4817F7D21304D2D005F9950 /* EnumCollection.swift */,
 				4E19E0231B919D5400825B73 /* IconCell.swift */,
@@ -71,6 +76,7 @@
 				4E19E0161B919AFC00825B73 /* Assets.xcassets */,
 				4E19E0181B919AFC00825B73 /* LaunchScreen.storyboard */,
 				4E19E01B1B919AFC00825B73 /* Info.plist */,
+				D44CBB22213061BE002741C7 /* UpdatingNotes.txt */,
 			);
 			path = "GMD Swift";
 			sourceTree = "<group>";
@@ -146,6 +152,7 @@
 				4E19E0281B91B35E00825B73 /* GMDIcons.ttf in Resources */,
 				4E19E01A1B919AFC00825B73 /* LaunchScreen.storyboard in Resources */,
 				4E19E0171B919AFC00825B73 /* Assets.xcassets in Resources */,
+				D44CBB23213061BE002741C7 /* UpdatingNotes.txt in Resources */,
 				4E19E0151B919AFC00825B73 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,6 +167,7 @@
 				4E19E0121B919AFC00825B73 /* ViewController.swift in Sources */,
 				4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */,
 				4E19E0101B919AFC00825B73 /* AppDelegate.swift in Sources */,
+				D44CBB252130628E002741C7 /* CaseGenerator.swift in Sources */,
 				D4817F7E21304D2D005F9950 /* EnumCollection.swift in Sources */,
 				4E19E0241B919D5400825B73 /* IconCell.swift in Sources */,
 			);

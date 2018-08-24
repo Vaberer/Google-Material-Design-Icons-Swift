@@ -20,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let font = UIFont(name: "HelveticaNeue-Light", size: 20) {
             UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.black]
         }
+        
+        CaseGenerator.printNewCases()
+        
         return true
     }
 

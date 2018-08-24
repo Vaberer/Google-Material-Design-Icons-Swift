@@ -1,0 +1,44 @@
+1) How to add a missing icon
+
+Take GMDIcons.ttf and upload it at http://torinak.com/font/lsfont.html
+Hunt in here for the icon that is missing. Once you find it - get the codepoint (Hex is shown on the left for the leftmost icon)
+Now find the icon name in CMDIcons.swift - it should be in the list, but commented out
+Add the code value
+Send a pull request
+
+
+
+
+
+2) How to update if the icon is not in the current ttf
+
+
+Get the latest woff file from Google
+Convert to ttf with https://everythingfonts.com/woff2-to-ttf
+
+Array of iconNames can be scraped with the following js
+
+//////////JS to scrape iconNames from https://material.io/tools/icons/?style=baseline
+var x = document.getElementsByClassName("icon-image-preview");
+var iconNames = []
+
+for (var i=0; i<x.length; i++) {
+var element = x[i];
+var cName = element.classList[0].slice(9)
+var parts = cName.split("_")
+parts = parts.map(function(part){return part.charAt(0).toUpperCase() + part.substr(1);})
+
+iconNames.push( ["gmd" + parts.join("")] )
+};
+
+console.log("["+iconNames.join()+"]")
+//////////////
+
+Update the array of iconNames in CaseGenerator.swift
+
+CaseGenerator.swift will match these with the existing cases and output a new list of cases where the unmatched cases are commented out
+This is run automatically when the demo project starts
+
+Update the list of cases in GMDIcon.swift
+
+Go back to step 1
