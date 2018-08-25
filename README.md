@@ -1,31 +1,23 @@
 # Google Material Design Icons Swift
 
-Forked from original project by @vaberer
+Forked from original project by [@vaberer](https://twitter.com/vaberer)
 
-Updated for Swift 4 and rewritten to simplify the code and make it easier to update
+Code is somewhat rewritten to make updating icons much easier - but it is almost completely compatible with the original.
 
-The code now lists all icons for the 3.0.1 release, and includes the updated font file
+Updated for Swift 4.
+The code now lists many more icons from the 3.0.1 release, and includes the updated font file
 
-However - updating the code points is a manual process - so most new icons are still commented out.
-If you want a new icon, you just have to find and update the codepoint. See instructions in the demo project UpdatingNotes.txt on how to do that.
+Note - I will update to Swift 4.2 as soon as that is released to avoid the dependency on EnumCollection
 
+
+If you want a new icon, you just have to find and update the codepoint.
+See instructions in the demo project UpdatingNotes.txt on how to do that.
 
 
 Various convenience methods have been updated to make them even more convenient.
 
-![Font Awesome Swift](https://github.com/Vaberer/Font-Awesome-Swift/blob/master/resources/opensource_matters.png)
 
-Originally by: [@vaberer](https://twitter.com/vaberer)
-
-I like &#9733;. Do not forget to &#9733; this super convenient library.
-
-
-
-#There is also a very popular [Font Awesome](https://github.com/Vaberer/Font-Awesome-Swift) library which you will love!
-
-
-
-Google Material Design Icons Swift library for iOS. No image icons any more. Using Google Material Design Icons Swift library is very easy to use. Look at the demo app which shows all icons and their names or just visit [Google Design Material Icons](https://www.google.com/design/icons/).
+Google Material Design Icons Swift library for iOS. It uses font glyphs rather than images, so they can be displayed perfectly at any size & resolution. [Google Design Material Icons](https://www.google.com/design/icons/).
 
 
 <p align="center">
@@ -41,15 +33,6 @@ Google Material Design Icons Swift library for iOS. No image icons any more. Usi
 
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
-
-CocoaPods 0.36 adds supports for Swift and embedded frameworks. You can install it with the following command:
-
-```bash
-$ gem install cocoapods
-```
-
-To integrate Google Material Design Icons Swift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -59,22 +42,10 @@ use_frameworks!
 pod 'Google-Material-Design-Icons-Swift', '~> 1.0.1'
 ```
 
-Then, run the following command:
-
-```bash
-$ pod install
-```
 Do not forget to import to your swift files where you want to use this library:
 ```swift
 import Google_Material_Design_Icons_Swift
 ```
-
-
-### Manually
-
-1. Copy `GMDIcon.swift` and `GMDIcons.ttf` files into your project
-2. Check to import `GMDIcons.ttf` in project, "Project" > "Target" > "Copy Bundle Resources"
-
 
 
 ## Usage
@@ -116,7 +87,7 @@ Super easy way how to add an icon.
 
 
 
-## Author
+## Original Author
 
 Patrik Vaberer, patrik.vaberer@gmail.com
 
