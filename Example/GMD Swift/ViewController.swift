@@ -20,7 +20,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var bGithub: UIBarButtonItem!
-    @IBOutlet weak var bTwitter: UIBarButtonItem!
+    @IBOutlet weak var bMissing: UIBarButtonItem!
     var filteredData = [String]()
     var resultSearchController = UISearchController()
     
@@ -41,7 +41,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         })()
         
         bGithub.GMDIcon = GMDType.gmdPublic
-        bTwitter.GMDIcon = GMDType.gmdPerson
+        bMissing.GMDIcon = GMDType.gmdReportProblem
 
 
     
@@ -87,16 +87,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    @IBAction func bTwitterPressed(_ sender: UIBarButtonItem) {
-        
-        if let twitterURL = URL(string: "twitter://user?id=2271666416") {
-            
-            if UIApplication.shared.canOpenURL(twitterURL) {
-                
-                UIApplication.shared.openURL(twitterURL)
-            }
-        }
-    }
+
     
     //MARK: Helpers
     func filterContentForSearchText(_ searchText: String) {

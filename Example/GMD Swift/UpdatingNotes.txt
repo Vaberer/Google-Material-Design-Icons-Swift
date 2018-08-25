@@ -1,17 +1,19 @@
 1) How to add a missing icon
 
-Take GMDIcons.ttf and upload it at http://torinak.com/font/lsfont.html
-Hunt in here for the icon that is missing. Once you find it - get the codepoint (Hex is shown on the left for the leftmost icon)
+Fire up the demo app and click the warning icon to view glyphs which have not been matched with an enum
+
+Hunt in here for the icon that is missing. Once you find it - get the codepoint
 Now find the icon name in CMDIcons.swift - it should be in the list, but commented out
 Add the code value
 Send a pull request
 
-
+Note - there are currently a lot of icons which don't have names (that I can find) on http://material.io
+If you want to add on of these to the code, please give it a name in the format gmdSomeName_tmp
+When/if we get an 'official' name for the item, I'll rename the _tmp one
 
 
 
 2) How to update if the icon is not in the current ttf
-
 
 Get the latest woff file from Google
 Convert to ttf with https://everythingfonts.com/woff2-to-ttf
