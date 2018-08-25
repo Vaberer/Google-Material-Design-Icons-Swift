@@ -7,7 +7,9 @@ Code is somewhat rewritten to make updating icons much easier - but it is almost
 Updated for Swift 4.
 The code now lists many more icons from the 3.0.1 release, and includes the updated font file
 
-Note - I will update to Swift 4.2 as soon as that is released to avoid the dependency on EnumCollection
+Note - I will update to Swift 4.2 as soon as that is released to avoid the dependency on EnumCollection.
+
+At that point, I'll release a new pod with a new name.
 
 
 If you want a new icon, you just have to find and update the codepoint.
@@ -39,7 +41,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'Google-Material-Design-Icons-Swift', '~> 1.0.1'
+pod 'Google-Material-Design-Icons-Swift', git: "https://github.com/ConfusedVorlon/Google-Material-Design-Icons-Swift"
 ```
 
 Do not forget to import to your swift files where you want to use this library:
@@ -49,11 +51,6 @@ import Google_Material_Design_Icons_Swift
 
 
 ## Usage
-
-Super easy way how to add an icon.
-<p align="center">
-  <img height="200" src="https://github.com/Vaberer/Google-Material-Design-Icons-Swift/blob/master/resources/helper.png"/>
-</p>
 
 
 ### UILabel
