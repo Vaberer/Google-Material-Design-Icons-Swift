@@ -2,7 +2,7 @@
 
 Forked from original project by [@vaberer](https://twitter.com/vaberer)
 
-Updated for Swift 4.
+Updated for Swift 4.2
 The code now lists many more icons from the 3.0.1 release, and includes the updated font file
 
 Code is somewhat rewritten to make updating icons much easier - but it is almost completely compatible with the original.
@@ -18,7 +18,7 @@ It uses font glyphs rather than images, so they can be displayed perfectly at an
 
 
 <p align="center">
-  <img height="480" src="https://raw.githubusercontent.com/ConfusedVorlon/Google-Material-Design-Icons/master/resources/image1.png"/>
+  <img height="480" src="https://github.com/Vaberer/Google-Material-Design-Icons-Swift/blob/master/resources/image1.png"/>
 </p>
 
 ## Requirements
