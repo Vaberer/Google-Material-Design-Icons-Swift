@@ -18,7 +18,6 @@
 		D44CBB23213061BE002741C7 /* UpdatingNotes.txt in Resources */ = {isa = PBXBuildFile; fileRef = D44CBB22213061BE002741C7 /* UpdatingNotes.txt */; };
 		D44CBB252130628E002741C7 /* CaseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44CBB242130628E002741C7 /* CaseGenerator.swift */; };
 		D44CBB272131790F002741C7 /* MissingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44CBB262131790F002741C7 /* MissingViewController.swift */; };
-		D4817F7E21304D2D005F9950 /* EnumCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4817F7D21304D2D005F9950 /* EnumCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +34,6 @@
 		D44CBB22213061BE002741C7 /* UpdatingNotes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = UpdatingNotes.txt; sourceTree = "<group>"; };
 		D44CBB242130628E002741C7 /* CaseGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseGenerator.swift; sourceTree = "<group>"; };
 		D44CBB262131790F002741C7 /* MissingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissingViewController.swift; sourceTree = "<group>"; };
-		D4817F7D21304D2D005F9950 /* EnumCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,7 +85,6 @@
 			isa = PBXGroup;
 			children = (
 				4E19E0251B91B34800825B73 /* GMDIcon.swift */,
-				D4817F7D21304D2D005F9950 /* EnumCollection.swift */,
 				4E19E0271B91B35E00825B73 /* GMDIcons.ttf */,
 			);
 			name = "Source - Google Material Icons Swift";
@@ -172,7 +169,6 @@
 				4E19E0261B91B34800825B73 /* GMDIcon.swift in Sources */,
 				4E19E0101B919AFC00825B73 /* AppDelegate.swift in Sources */,
 				D44CBB252130628E002741C7 /* CaseGenerator.swift in Sources */,
-				D4817F7E21304D2D005F9950 /* EnumCollection.swift in Sources */,
 				4E19E0241B919D5400825B73 /* IconCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

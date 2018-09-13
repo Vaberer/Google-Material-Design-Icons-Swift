@@ -23,7 +23,7 @@ class CaseGenerator {
     
     static var caseLookup:[String:GMDType] = {
         var lookup:[String:GMDType] = [:]
-        for item in GMDType.allValues {
+        for item in GMDType.allCases {
             lookup["\(item)"] = item
         }
         return lookup

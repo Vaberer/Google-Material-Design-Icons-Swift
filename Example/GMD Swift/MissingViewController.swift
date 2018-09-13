@@ -33,7 +33,7 @@ class MissingViewController: UIViewController, UITableViewDataSource, UITableVie
         
         let font = GMDType.font()
         if var extantChars = font.fontDescriptor.object(forKey: .characterSet) as? CharacterSet {
-            let knownCharString:String = GMDType.allValues.reduce("") { (total, icon) -> String in
+            let knownCharString:String = GMDType.allCases.reduce("") { (total, icon) -> String in
                 total + icon.text
             }
             
@@ -79,18 +79,9 @@ class MissingViewController: UIViewController, UITableViewDataSource, UITableVie
         return missingItems.count
     }
     
-    
-    
-    @IBAction func bGithubPressed(_ sender: UIBarButtonItem) {
-        
-        if let requestUrl = URL(string: "https://github.com/Vaberer/Google-Material-Design-Icons-Swift") {
-            UIApplication.shared.openURL(requestUrl)
-        }
-    }
-    
 
     
-    let helper = GMDType.cases().map { (item) -> String in
+    let helper = GMDType.allCases.map { (item) -> String in
         return "\(item)"
     }
 

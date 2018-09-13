@@ -57,7 +57,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         let index = resultSearchController.isActive ? helper.index(of: filteredData[indexPath.row])! : indexPath.row
         
-        let icon = GMDType.allValues[index]
+        let icon = GMDType.allCases[index]
         
         c.lSmall.GMDIcon = icon
         c.lMedium.GMDIcon = icon
@@ -79,14 +79,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         filterContentForSearchText(searchController.searchBar.text!.lowercased())
         self.tableView.reloadData()
     }
-    
-    @IBAction func bGithubPressed(_ sender: UIBarButtonItem) {
-        
-        if let requestUrl = URL(string: "https://github.com/Vaberer/Google-Material-Design-Icons-Swift") {
-            UIApplication.shared.openURL(requestUrl)
-        }
-    }
-    
 
     
     //MARK: Helpers
@@ -99,7 +91,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    let helper = GMDType.cases().map { (item) -> String in
+    let helper = GMDType.allCases.map { (item) -> String in
         return "\(item)"
     }
 

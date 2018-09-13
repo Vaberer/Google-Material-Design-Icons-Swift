@@ -141,7 +141,7 @@ private class FontLoader {
 /**
 List of all icons in Google Material Design Font
 */
-public enum GMDType: Int, EnumCollection {
+public enum GMDType: Int, CaseIterable {
     
     //See UpdatingNotes.txt for info on how to add missing glyphs
 
@@ -1193,7 +1193,7 @@ public enum GMDType: Int, EnumCollection {
 
     
     static var count: Int {
-        return GMDType.allValues.count
+        return GMDType.allCases.count
     }
     
     public var text: String {
@@ -1201,7 +1201,7 @@ public enum GMDType: Int, EnumCollection {
     }
     
     static func showAll() {
-        for item in GMDType.cases() {
+        for item in GMDType.allCases {
             let number = item.text.utf16.first!
             let hex = String(format:"%02X", number)
             print("case \(item) = 0x\(hex),")

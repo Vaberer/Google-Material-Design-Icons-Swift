@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="qG7-z9-4C8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="qG7-z9-4C8">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -35,7 +33,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6cv-xW-lhJ">
-                                                    <rect key="frame" x="153" y="33" width="22" height="22"/>
+                                                    <rect key="frame" x="153" y="34" width="22" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="6cv-xW-lhJ" secondAttribute="height" multiplier="1:1" id="So1-zA-qPe"/>
                                                         <constraint firstAttribute="height" constant="22" id="UB5-h9-jLS"/>
@@ -45,7 +43,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="X" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tOG-yK-Mop">
-                                                    <rect key="frame" x="200" y="22" width="45" height="45"/>
+                                                    <rect key="frame" x="200" y="22.5" width="45" height="45"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="45" id="LjA-1p-0Ud"/>
                                                         <constraint firstAttribute="width" secondItem="tOG-yK-Mop" secondAttribute="height" multiplier="1:1" id="V0R-VR-rbj"/>
@@ -124,9 +122,6 @@
                     <navigationItem key="navigationItem" title="Google Material Design Icons" id="fIw-BI-1EC">
                         <barButtonItem key="leftBarButtonItem" id="ekL-m7-4AR">
                             <color key="tintColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="bGithubPressed:" destination="fK4-jy-Btw" id="SYN-Ts-Vx7"/>
-                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" id="q4P-XN-2BB">
                             <color key="tintColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -187,7 +182,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="CGZ-bJ-ghY">
-                                                    <rect key="frame" x="183" y="18.5" width="22" height="22"/>
+                                                    <rect key="frame" x="183" y="19" width="22" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="CGZ-bJ-ghY" secondAttribute="height" multiplier="1:1" id="1cz-oU-IMt"/>
                                                         <constraint firstAttribute="height" constant="22" id="TyS-ht-gyo"/>
@@ -207,7 +202,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="GMD Icon Font" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="NeP-Va-xs0">
-                                                    <rect key="frame" x="15" y="16.5" width="160" height="30"/>
+                                                    <rect key="frame" x="15" y="16" width="160" height="30"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="25"/>
                                                     <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
