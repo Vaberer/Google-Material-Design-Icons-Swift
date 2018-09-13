@@ -18,7 +18,7 @@ It uses font glyphs rather than images, so they can be displayed perfectly at an
 
 
 <p align="center">
-  <img height="480" src="https://github.com/Vaberer/Google-Material-Design-Icons-Swift/blob/master/resources/image1.png"/>
+  <img height="480" src="https://raw.githubusercontent.com/ConfusedVorlon/HS-Google-Material-Design-Icons/master/resources/image1.png"/>
 </p>
 
 ## Requirements
