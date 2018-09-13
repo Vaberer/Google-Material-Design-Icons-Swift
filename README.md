@@ -1,35 +1,30 @@
-# Google Material Design Icons Swift
+# Google Material Design Icons
 
 Forked from original project by [@vaberer](https://twitter.com/vaberer)
-
-Code is somewhat rewritten to make updating icons much easier - but it is almost completely compatible with the original.
 
 Updated for Swift 4.
 The code now lists many more icons from the 3.0.1 release, and includes the updated font file
 
-Note - I will update to Swift 4.2 as soon as that is released to avoid the dependency on EnumCollection.
-
-At that point, I'll release a new pod with a new name.
-
+Code is somewhat rewritten to make updating icons much easier - but it is almost completely compatible with the original.
 
 If you want a new icon, you just have to find and update the codepoint.
 See instructions in the demo project UpdatingNotes.txt on how to do that.
 
-
 Various convenience methods have been updated to make them even more convenient.
 
 
-Google Material Design Icons Swift library for iOS. It uses font glyphs rather than images, so they can be displayed perfectly at any size & resolution. [Google Design Material Icons](https://www.google.com/design/icons/).
+Google Material Design Icons Swift library for iOS.
+It uses font glyphs rather than images, so they can be displayed perfectly at any size & resolution. [Google Design Material Icons](https://www.google.com/design/icons/).
 
 
 <p align="center">
-  <img height="480" src="https://github.com/Vaberer/Google-Material-Design-Icons-Swift/blob/master/resources/image1.png"/>
+  <img height="480" src="https://raw.githubusercontent.com/ConfusedVorlon/Google-Material-Design-Icons/master/resources/image1.png"/>
 </p>
 
 ## Requirements
 
 - iOS 8.0+
-- Xcode 7
+- Xcode 10
 
 ## Installation
 
@@ -38,15 +33,15 @@ Google Material Design Icons Swift library for iOS. It uses font glyphs rather t
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '8.0'
+platform :ios, '9.0'
 use_frameworks!
 
-pod 'Google-Material-Design-Icons-Swift', git: "https://github.com/ConfusedVorlon/Google-Material-Design-Icons-Swift"
+pod 'HS-Google-Material-Design-Icons'
 ```
 
 Do not forget to import to your swift files where you want to use this library:
 ```swift
-import Google_Material_Design_Icons_Swift
+import HS_Google_Material_Design_Icons
 ```
 
 
@@ -94,6 +89,6 @@ Patrik Vaberer, patrik.vaberer@gmail.com
 
 ### Licence
 
-Google Material Design Icons Swift is available under the MIT license. See the LICENSE file for more info.
+Google Material Design Icons is available under the MIT license. See the LICENSE file for more info.
 
 

@@ -4,9 +4,9 @@ import UIKit
 public extension UIButton {
     
     /**
-    To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
-    */
-    func setGMDIcon(_ icon: GMDType, forState state: UIControlState = .normal, iconSize:CGFloat? = nil) {
+     To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
+     */
+    func setGMDIcon(_ icon: GMDType, forState state: UIControl.State = .normal, iconSize:CGFloat? = nil) {
         
         if let titleLabel = titleLabel {
             
@@ -22,8 +22,8 @@ public extension UIButton {
 public extension UILabel {
     
     /**
-    To set an icon, use i.e. `labelName.GMDIcon = GMDType.GMDAdjust`
-    */
+     To set an icon, use i.e. `labelName.GMDIcon = GMDType.GMDAdjust`
+     */
     var GMDIcon: GMDType? {
         
         set {
@@ -39,11 +39,11 @@ public extension UILabel {
         }
         
         get {
-  
-                if text?.utf16.count == 1 {
-                    return GMDType(rawValue: Int(text!.utf16.first!))
-                }
-
+            
+            if text?.utf16.count == 1 {
+                return GMDType(rawValue: Int(text!.utf16.first!))
+            }
+            
             return nil
         }
     }
@@ -52,37 +52,37 @@ public extension UILabel {
 public extension UIBarButtonItem {
     
     /**
-    To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
-    */
+     To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
+     */
     func setGMDIcon(_ icon: GMDType, iconSize: CGFloat) {
         
         FontLoader.loadFontIfNeeded()
         let font = UIFont(name: GMDStruct.FontName, size: iconSize)
         
         assert(font != nil, GMDStruct.ErrorAnnounce)
-        setTitleTextAttributes([NSAttributedStringKey.font: font!], for: UIControlState())
+        setTitleTextAttributes([NSAttributedString.Key.font: font!], for: UIControl.State())
         title = icon.text
     }
     
     /**
-    To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
-    */
+     To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
+     */
     var GMDIcon: GMDType? {
         set {
             
             FontLoader.loadFontIfNeeded()
             let font = UIFont(name: GMDStruct.FontName, size: 23)
             assert(font != nil,GMDStruct.ErrorAnnounce)
-            setTitleTextAttributes([NSAttributedStringKey.font: font!], for: UIControlState())
+            setTitleTextAttributes([NSAttributedString.Key.font: font!], for: UIControl.State())
             title = newValue?.text
         }
         
         get {
-
-                if title?.utf16.count == 1 {
-                    return GMDType(rawValue: Int(title!.utf16.first!))
-                }
-
+            
+            if title?.utf16.count == 1 {
+                return GMDType(rawValue: Int(title!.utf16.first!))
+            }
+            
             return nil
         }
     }
@@ -98,40 +98,39 @@ private struct GMDStruct {
 
 private class FontLoader {
     
-    private static var __once: () = {
-                let bundle = Bundle(for: FontLoader.self)
-                var fontURL:URL!
-                let identifier = bundle.bundleIdentifier
-                
-                if identifier?.hasPrefix("org.cocoapods") == true {
-                    
-                    fontURL = bundle.url(forResource: GMDStruct.FileFontName, withExtension: "ttf", subdirectory: "Google-Material-Design-Icons-Swift.bundle")!
-                } else {
-                    
-                    fontURL = bundle.url(forResource: GMDStruct.FileFontName, withExtension: "ttf")!
-                }
-                let data = try! Data(contentsOf: fontURL)
-                
-                let provider = CGDataProvider(data: data as CFData)!
-                let font = CGFont(provider)!
-                
-                var error: Unmanaged<CFError>?
-                if !CTFontManagerRegisterGraphicsFont(font, &error) {
-                    
-                    let errorDescription: CFString = CFErrorCopyDescription(error!.takeUnretainedValue())
-                    let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
-                    NSException(name: NSExceptionName.internalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
-                }
-            }()
+    private static var loadFont:Bool = {
+        var iconBundle = Bundle(for: FontLoader.self)
+        var fontURL:URL!
+        let identifier = iconBundle.bundleIdentifier!
+
+        if identifier.hasPrefix("org.cocoapods") {
+            fontURL = iconBundle.url(forResource: GMDStruct.FileFontName,
+                                     withExtension: "ttf",
+                                     subdirectory: "HS-Google-Material-Design-Icons.bundle")!
+        } else {
+            fontURL = iconBundle.url(forResource: GMDStruct.FileFontName, withExtension: "ttf")!
+        }
+        
+        let data = try! Data(contentsOf: fontURL)
+        
+        let provider = CGDataProvider(data: data as CFData)!
+        let font = CGFont(provider)!
+        
+        var error: Unmanaged<CFError>?
+        if !CTFontManagerRegisterGraphicsFont(font, &error) {
+            
+            let errorDescription: CFString = CFErrorCopyDescription(error!.takeUnretainedValue())
+            let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
+            NSException(name: NSExceptionName.internalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
+        }
+        
+        return true
+    }()
     
-    struct Static {
-        static var onceToken : Int = 0
-    }
     
     static func loadFontIfNeeded() {
         if (UIFont.fontNames(forFamilyName: GMDStruct.FontName).count == 0) {
-            
-            _ = FontLoader.__once
+            _ = FontLoader.loadFont
         }
     }
 }
@@ -139,12 +138,12 @@ private class FontLoader {
 
 
 /**
-List of all icons in Google Material Design Font
-*/
+ List of all icons in Google Material Design Font
+ */
 public enum GMDType: Int, CaseIterable {
     
     //See UpdatingNotes.txt for info on how to add missing glyphs
-
+    
     
     case gmd3dRotation = 0xE84D
     case gmdAccessibility = 0xE84E
@@ -1190,7 +1189,7 @@ public enum GMDType: Int, CaseIterable {
     case gmdStarHalf = 0xE839
     case gmdToggleOff = 0xE9F5
     case gmdToggleOn = 0xE9F6
-
+    
     
     static var count: Int {
         return GMDType.allCases.count
@@ -1211,7 +1210,7 @@ public enum GMDType: Int, CaseIterable {
     static func font() -> UIFont {
         return UIFont(name: GMDStruct.FontName, size: 23)!
     }
-
+    
     
 }
 
