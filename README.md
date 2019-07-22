@@ -1,17 +1,37 @@
+
+# Deprecated
+
+Deprecated in favour of [HS-Font-Icons](https://github.com/ConfusedVorlon/HS-Font-Icons)
+HSFontIcons supports Google material design icons as well as FontAwesome
+You can easily add new icon families too
+
+Code is similar:
+
+```Swift
+    buttonName.setGMDIcon(.gmdPublic)
+
+    //or if you want to set an icon size and/or specify the state, use:
+    buttonName.setGMDIcon(.gmdPublic, forState: .highlighted, iconSize: 30)
+
+    buttonName.setTitleColor(UIColor.redColor(), forState: .normal)
+```
+
+becomes
+
+
+```Swift
+    buttonName.setIcon(GMDIcon.public)
+
+    //or if you want to set an icon size and/or specify the state, use:
+    buttonName.setIcon(GMDIcon.public, forState: .highlighted, iconSize: 30)
+
+    buttonName.setTitleColor(UIColor.redColor(), forState: .normal)
+```
+
+
 # Google Material Design Icons
 
 Forked from original project by [@vaberer](https://twitter.com/vaberer)
-
-Updated for Swift 4.2
-The code now lists many more icons from the 3.0.1 release, and includes the updated font file
-
-Code is somewhat rewritten to make updating icons much easier - but it is almost completely compatible with the original.
-
-If you want a new icon, you just have to find and update the codepoint.
-See instructions in the demo project UpdatingNotes.txt on how to do that.
-
-Various convenience methods have been updated to make them even more convenient.
-
 
 Google Material Design Icons Swift library for iOS.
 It uses font glyphs rather than images, so they can be displayed perfectly at any size & resolution. [Google Design Material Icons](https://www.google.com/design/icons/).
@@ -28,22 +48,7 @@ It uses font glyphs rather than images, so they can be displayed perfectly at an
 
 ## Installation
 
-### CocoaPods
-
-
-```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
-use_frameworks!
-
-pod 'HS-Google-Material-Design-Icons'
-```
-
-Do not forget to import to your swift files where you want to use this library:
-```swift
-import HS_Google_Material_Design_Icons
-```
-
+Please switch to [HS-Font-Icons](https://github.com/ConfusedVorlon/HS-Font-Icons)
 
 ## Usage
 

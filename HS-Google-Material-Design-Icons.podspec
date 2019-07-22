@@ -20,4 +20,7 @@ Pod::Spec.new do |s|
   s.resource_bundle = { 'HS-Google-Material-Design-Icons' => 'Source/GMDIcons.ttf' }
   s.frameworks = 'UIKit', 'CoreText'
   s.requires_arc = true
+
+  s.deprecated = true
+  s.deprecated_in_favor_of = 'HS-Font-Icons'
 end
