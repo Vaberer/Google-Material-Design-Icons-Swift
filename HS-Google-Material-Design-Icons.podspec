@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'HS-Google-Material-Design-Icons'
-  s.version = '1.2.1'
+  s.version = '1.2.2'
   s.swift_version = '4.2'
   s.license = 'MIT'
   s.summary = 'Google Material Design Icons Library for iOS'
