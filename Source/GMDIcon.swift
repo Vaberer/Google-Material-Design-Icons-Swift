@@ -4,17 +4,17 @@ import UIKit
 public extension UIButton {
     
     /**
-    To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
-    */
-    func setGMDIcon(icon: GMDType, forState state: UIControlState) {
+     To set an icon, use i.e. `buttonName.setGMDIcon(GMDType.GMBPublic, forState: .Normal)`
+     */
+    func setGMDIcon(_ icon: GMDType, forState state: UIControl.State = .normal, iconSize:CGFloat? = nil) {
         
         if let titleLabel = titleLabel {
             
             FontLoader.loadFontIfNeeded()
-            let font = UIFont(name: GMDStruct.FontName, size: titleLabel.font.pointSize)
+            let font = UIFont(name: GMDStruct.FontName, size: iconSize ?? titleLabel.font.pointSize)
             assert(font != nil, GMDStruct.ErrorAnnounce)
             titleLabel.font = font!
-            setTitle(icon.text, forState: state)
+            setTitle(icon.text, for: state)
         }
     }
 }
@@ -22,8 +22,8 @@ public extension UIButton {
 public extension UILabel {
     
     /**
-    To set an icon, use i.e. `labelName.GMDIcon = GMDType.GMDAdjust`
-    */
+     To set an icon, use i.e. `labelName.GMDIcon = GMDType.GMDAdjust`
+     */
     var GMDIcon: GMDType? {
         
         set {
@@ -39,12 +39,11 @@ public extension UILabel {
         }
         
         get {
-            if let text = text {
-                
-                if let index =  GMDIcons.indexOf(text) {
-                    return GMDType(rawValue: index)
-                }
+            
+            if text?.utf16.count == 1 {
+                return GMDType(rawValue: Int(text!.utf16.first!))
             }
+            
             return nil
         }
     }
@@ -53,38 +52,37 @@ public extension UILabel {
 public extension UIBarButtonItem {
     
     /**
-    To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
-    */
-    func setGMDIcon(icon: GMDType, iconSize: CGFloat) {
+     To set an icon, use i.e. `barName.GMDIcon = GMDType.GMDPublic`
+     */
+    func setGMDIcon(_ icon: GMDType, iconSize: CGFloat) {
         
         FontLoader.loadFontIfNeeded()
         let font = UIFont(name: GMDStruct.FontName, size: iconSize)
         
         assert(font != nil, GMDStruct.ErrorAnnounce)
-        setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
+        setTitleTextAttributes([NSAttributedString.Key.font: font!], for: UIControl.State())
         title = icon.text
     }
     
     /**
-    To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
-    */
+     To set an icon, use i.e. `barName.setGMDIcon(GMDType.GMDPublic, iconSize: 35)`
+     */
     var GMDIcon: GMDType? {
         set {
             
             FontLoader.loadFontIfNeeded()
             let font = UIFont(name: GMDStruct.FontName, size: 23)
             assert(font != nil,GMDStruct.ErrorAnnounce)
-            setTitleTextAttributes([NSFontAttributeName: font!], forState: .Normal)
+            setTitleTextAttributes([NSAttributedString.Key.font: font!], for: UIControl.State())
             title = newValue?.text
         }
         
         get {
-            if let title = title {
-                
-                if let index =  GMDIcons.indexOf(title) {
-                    return GMDType(rawValue: index)
-                }
+            
+            if title?.utf16.count == 1 {
+                return GMDType(rawValue: Int(title!.utf16.first!))
             }
+            
             return nil
         }
     }
@@ -100,38 +98,39 @@ private struct GMDStruct {
 
 private class FontLoader {
     
-    struct Static {
-        static var onceToken : dispatch_once_t = 0
-    }
+    private static var loadFont:Bool = {
+        var iconBundle = Bundle(for: FontLoader.self)
+        var fontURL:URL!
+        let identifier = iconBundle.bundleIdentifier!
+
+        if identifier.hasPrefix("org.cocoapods") {
+            fontURL = iconBundle.url(forResource: GMDStruct.FileFontName,
+                                     withExtension: "ttf",
+                                     subdirectory: "HS-Google-Material-Design-Icons.bundle")!
+        } else {
+            fontURL = iconBundle.url(forResource: GMDStruct.FileFontName, withExtension: "ttf")!
+        }
+        
+        let data = try! Data(contentsOf: fontURL)
+        
+        let provider = CGDataProvider(data: data as CFData)!
+        let font = CGFont(provider)!
+        
+        var error: Unmanaged<CFError>?
+        if !CTFontManagerRegisterGraphicsFont(font, &error) {
+            
+            let errorDescription: CFString = CFErrorCopyDescription(error!.takeUnretainedValue())
+            let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
+            NSException(name: NSExceptionName.internalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
+        }
+        
+        return true
+    }()
+    
     
     static func loadFontIfNeeded() {
-        if (UIFont.fontNamesForFamilyName(GMDStruct.FontName).count == 0) {
-            
-            dispatch_once(&Static.onceToken) {
-                let bundle = NSBundle(forClass: FontLoader.self)
-                var fontURL = NSURL()
-                let identifier = bundle.bundleIdentifier
-                
-                if identifier?.hasPrefix("org.cocoapods") == true {
-                    
-                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf", subdirectory: "Google-Material-Design-Icons-Swift.bundle")!
-                } else {
-                    
-                    fontURL = bundle.URLForResource(GMDStruct.FileFontName, withExtension: "ttf")!
-                }
-                let data = NSData(contentsOfURL: fontURL)!
-                
-                let provider = CGDataProviderCreateWithCFData(data)
-                let font = CGFontCreateWithDataProvider(provider)!
-                
-                var error: Unmanaged<CFError>?
-                if !CTFontManagerRegisterGraphicsFont(font, &error) {
-                    
-                    let errorDescription: CFStringRef = CFErrorCopyDescription(error!.takeUnretainedValue())
-                    let nsError = error!.takeUnretainedValue() as AnyObject as! NSError
-                    NSException(name: NSInternalInconsistencyException, reason: errorDescription as String, userInfo: [NSUnderlyingErrorKey: nsError]).raise()
-                }
-            }
+        if (UIFont.fontNames(forFamilyName: GMDStruct.FontName).count == 0) {
+            _ = FontLoader.loadFont
         }
     }
 }
@@ -139,22 +138,1079 @@ private class FontLoader {
 
 
 /**
-List of all icons in Google Material Design Font
-*/
-public enum GMDType: Int {
+ List of all icons in Google Material Design Font
+ */
+public enum GMDType: Int, CaseIterable {
+    
+    //See UpdatingNotes.txt for info on how to add missing glyphs
+    
+    
+    case gmd3dRotation = 0xE84D
+    case gmdAccessibility = 0xE84E
+    case gmdAccessibilityNew = 0xE92C
+    case gmdAccessible = 0xE914
+    case gmdAccessibleForward = 0xE934
+    case gmdAccountBalance = 0xE84F
+    case gmdAccountBalanceWallet = 0xE850
+    case gmdAccountBox = 0xE851
+    case gmdAccountCircle = 0xE853
+    case gmdAddShoppingCart = 0xE854
+    case gmdAlarm = 0xE855
+    case gmdAlarmAdd = 0xE856
+    case gmdAlarmOff = 0xE857
+    case gmdAlarmOn = 0xE858
+    case gmdAllInbox = 0xE97F
+    case gmdAllOut = 0xE90B
+    case gmdAndroid = 0xE859
+    case gmdAnnouncement = 0xE85A
+    case gmdArrowRightAlt = 0xE8E4
+    case gmdAspectRatio = 0xE85B
+    case gmdAssessment = 0xE85C
+    case gmdAssignment = 0xE85D
+    case gmdAssignmentInd = 0xE85E
+    case gmdAssignmentLate = 0xE85F
+    case gmdAssignmentReturn = 0xE860
+    case gmdAssignmentReturned = 0xE861
+    case gmdAssignmentTurnedIn = 0xE862
+    case gmdAutorenew = 0xE863
+    case gmdBackup = 0xE864
+    case gmdBook = 0xE865
+    case gmdBookmark = 0xE866
+    case gmdBookmarkBorder = 0xE867
+    case gmdBookmarks = 0xE98B
+    case gmdBugReport = 0xE868
+    case gmdBuild = 0xE869
+    case gmdCached = 0xE86A
+    case gmdCalendarToday = 0xE935
+    case gmdCalendarViewDay = 0xE936
+    case gmdCameraEnhance = 0xE8FC
+    case gmdCardGiftcard = 0xE8F6
+    case gmdCardMembership = 0xE8F7
+    case gmdCardTravel = 0xE8F8
+    case gmdChangeHistory = 0xE86B
+    case gmdCheckCircle = 0xE86C
+    case gmdCheckCircleOutline = 0xE92D
+    case gmdChromeReaderMode = 0xE86D
+    case gmdClass = 0xE86E
+    case gmdCode = 0xE86F
+    case gmdCommute = 0xE940
+    case gmdCompareArrows = 0xE915
+    case gmdContactSupport = 0xE94C
+    case gmdCopyright = 0xE90C
+    case gmdCreditCard = 0xE870
+    case gmdDashboard = 0xE871
+    case gmdDateRange = 0xE916
+    case gmdDelete = 0xE872
+    case gmdDeleteForever = 0xE92B
+    case gmdDeleteOutline = 0xE92E
+    case gmdDescription = 0xE873
+    case gmdDns = 0xE875
+    case gmdDone = 0xE876
+    case gmdDoneAll = 0xE877
+    case gmdDoneOutline = 0xE92F
+    case gmdDonutLarge = 0xE917
+    case gmdDonutSmall = 0xE918
+    case gmdDragIndicator = 0xE945
+    case gmdEject = 0xE8FB
+    case gmdEuroSymbol = 0xE926
+    case gmdEvent = 0xE878
+    case gmdEventSeat = 0xE903
+    case gmdExitToApp = 0xE879
+    case gmdExplore = 0xE87A
+    case gmdExploreOff = 0xE9A8
+    case gmdExtension = 0xE87B
+    case gmdFace = 0xE87C
+    case gmdFavorite = 0xE87D
+    case gmdFavoriteBorder = 0xE87E
+    case gmdFeedback = 0xE87F
+    case gmdFindInPage = 0xE880
+    case gmdFindReplace = 0xE881
+    case gmdFingerprint = 0xE90D
+    case gmdFlightLand = 0xE904
+    case gmdFlightTakeoff = 0xE905
+    case gmdFlipToBack = 0xE882
+    case gmdFlipToFront = 0xE883
+    case gmdGTranslate = 0xE927
+    case gmdGavel = 0xE90E
+    case gmdGetApp = 0xE884
+    case gmdGif = 0xE908
+    case gmdGrade = 0xE885
+    case gmdGroupWork = 0xE886
+    case gmdHelp = 0xE887
+    case gmdHelpOutline = 0xE8FD
+    case gmdHighlightOff = 0xE888
+    case gmdHistory = 0xE889
+    case gmdHome = 0xE88A
+    case gmdHorizontalSplit = 0xE947
+    case gmdHourglassEmpty = 0xE88B
+    case gmdHourglassFull = 0xE88C
+    case gmdHttp = 0xE902
+    case gmdHttps = 0xE88D
+    case gmdImportantDevices = 0xE912
+    case gmdInfo = 0xE88E
+    case gmdInput = 0xE890
+    case gmdInvertColors = 0xE891
+    case gmdLabel = 0xE892
+    case gmdLabelImportant = 0xE937
+    case gmdLabelOff = 0xE9B6
+    case gmdLanguage = 0xE894
+    case gmdLaunch = 0xE895
+    case gmdLineStyle = 0xE919
+    case gmdLineWeight = 0xE91A
+    case gmdList = 0xE896
+    case gmdLock = 0xE897
+    case gmdLockOpen = 0xE898
+    case gmdLoyalty = 0xE89A
+    case gmdMarkunreadMailbox = 0xE89B
+    case gmdMaximize = 0xE930
+    case gmdMinimize = 0xE931
+    case gmdMotorcycle = 0xE91B
+    case gmdNoteAdd = 0xE89C
+    case gmdOfflineBolt = 0xE932
+    case gmdOfflinePin = 0xE90A
+    case gmdOpacity = 0xE91C
+    case gmdOpenInBrowser = 0xE89D
+    case gmdOpenInNew = 0xE89E
+    case gmdOpenWith = 0xE89F
+    case gmdPageview = 0xE8A0
+    case gmdPanTool = 0xE925
+    case gmdPayment = 0xE8A1
+    case gmdPermCameraMic = 0xE8A2
+    case gmdPermContactCalendar = 0xE8A3
+    case gmdPermDataSetting = 0xE8A4
+    case gmdPermDeviceInformation = 0xE8A5
+    case gmdPermIdentity = 0xE8A6
+    case gmdPermMedia = 0xE8A7
+    case gmdPermPhoneMsg = 0xE8A8
+    case gmdPermScanWifi = 0xE8A9
+    case gmdPets = 0xE91D
+    case gmdPictureInPicture = 0xE8AA
+    case gmdPictureInPictureAlt = 0xE911
+    case gmdPlayForWork = 0xE906
+    case gmdPolymer = 0xE8AB
+    case gmdPowerSettingsNew = 0xE8AC
+    case gmdPregnantWoman = 0xE91E
+    case gmdPrint = 0xE8AD
+    case gmdQueryBuilder = 0xE8AE
+    case gmdQuestionAnswer = 0xE8AF
+    case gmdReceipt = 0xE8B0
+    case gmdRecordVoiceOver = 0xE91F
+    case gmdRedeem = 0xE8B1
+    case gmdRemoveShoppingCart = 0xE928
+    case gmdReorder = 0xE8FE
+    case gmdReportProblem = 0xE8B2
+    case gmdRestore = 0xE8B3
+    case gmdRestoreFromTrash = 0xE938
+    case gmdRestorePage = 0xE929
+    case gmdRoom = 0xE8B4
+    case gmdRoundedCorner = 0xE920
+    case gmdRowing = 0xE921
+    case gmdSchedule = 0xE8B5
+    case gmdSearch = 0xE8B6
+    case gmdSettings = 0xE8B8
+    case gmdSettingsApplications = 0xE8B9
+    case gmdSettingsBackupRestore = 0xE8BA
+    case gmdSettingsBluetooth = 0xE8BB
+    case gmdSettingsBrightness = 0xE8BD
+    case gmdSettingsCell = 0xE8BC
+    case gmdSettingsEthernet = 0xE8BE
+    case gmdSettingsInputAntenna = 0xE8BF
+    case gmdSettingsInputComponent = 0xE8C0
+    case gmdSettingsInputComposite = 0xE8C1
+    case gmdSettingsInputHdmi = 0xE8C2
+    case gmdSettingsInputSvideo = 0xE8C3
+    case gmdSettingsOverscan = 0xE8C4
+    case gmdSettingsPhone = 0xE8C5
+    case gmdSettingsPower = 0xE8C6
+    case gmdSettingsRemote = 0xE8C7
+    case gmdSettingsVoice = 0xE8C8
+    case gmdShop = 0xE8C9
+    case gmdShopTwo = 0xE8CA
+    case gmdShoppingBasket = 0xE8CB
+    case gmdShoppingCart = 0xE8CC
+    case gmdSpeakerNotes = 0xE8CD
+    case gmdSpeakerNotesOff = 0xE92A
+    case gmdSpellcheck = 0xE8CE
+    case gmdStarRate = 0xE8CF
+    case gmdStars = 0xE8D0
+    case gmdStore = 0xE8D1
+    case gmdSubject = 0xE8D2
+    case gmdSupervisedUserCircle = 0xE939
+    case gmdSupervisorAccount = 0xE8D3
+    case gmdSwapHoriz = 0xE8D4
+    case gmdSwapHorizontalCircle = 0xE933
+    case gmdSwapVert = 0xE8D5
+    case gmdSwapVerticalCircle = 0xE8D6
+    case gmdTab = 0xE8D8
+    case gmdTabUnselected = 0xE8D9
+    case gmdTextRotateUp = 0xE93A
+    case gmdTextRotateVertical = 0xE93B
+    case gmdTextRotationDown = 0xE93E
+    case gmdTextRotationNone = 0xE93F
+    case gmdTheaters = 0xE8DA
+    case gmdThumbDown = 0xE8DB
+    case gmdThumbUp = 0xE8DC
+    case gmdThumbsUpDown = 0xE8DD
+    case gmdTimeline = 0xE922
+    case gmdToc = 0xE8DE
+    case gmdToday = 0xE8DF
+    case gmdToll = 0xE8E0
+    case gmdTouchApp = 0xE913
+    case gmdTrackChanges = 0xE8E1
+    case gmdTranslate = 0xE8E2
+    case gmdTrendingDown = 0xE8E3
+    case gmdTrendingFlat = 0xE941
+    case gmdTrendingUp = 0xE8E5
+    case gmdTurnedIn = 0xE8E6
+    case gmdTurnedInNot = 0xE8E7
+    case gmdUpdate = 0xE923
+    case gmdVerifiedUser = 0xE8E8
+    case gmdVerticalSplit = 0xE949
+    case gmdViewAgenda = 0xE8E9
+    case gmdViewArray = 0xE8EA
+    case gmdViewCarousel = 0xE8EB
+    case gmdViewColumn = 0xE8EC
+    case gmdViewDay = 0xE8ED
+    case gmdViewHeadline = 0xE8EE
+    case gmdViewList = 0xE8EF
+    case gmdViewModule = 0xE8F0
+    case gmdViewQuilt = 0xE8F1
+    case gmdViewStream = 0xE8F2
+    case gmdViewWeek = 0xE8F3
+    case gmdVisibility = 0xE8F4
+    case gmdVisibilityOff = 0xE8F5
+    case gmdVoiceOverOff = 0xE94A
+    case gmdWatchLater = 0xE924
+    case gmdWork = 0xE8F9
+    case gmdWorkOff = 0xE942
+    case gmdWorkOutline = 0xE943
+    case gmdYoutubeSearchedFor = 0xE8FA
+    case gmdZoomIn = 0xE8FF
+    case gmdZoomOut = 0xE900
+    case gmdAddAlert = 0xE003
+    case gmdError = 0xE000
+    case gmdErrorOutline = 0xE001
+    case gmdNotificationImportant = 0xE004
+    case gmdWarning = 0xE002
+    case gmd4k = 0xE072
+    case gmdAddToQueue = 0xE05C
+    case gmdAirplay = 0xE055
+    case gmdAlbum = 0xE019
+    case gmdArtTrack = 0xE060
+    case gmdAvTimer = 0xE01B
+    case gmdBrandingWatermark = 0xE06B
+    case gmdCallToAction = 0xE06C
+    case gmdClosedCaption = 0xE01C
+    case gmdControlCamera = 0xE074
+    case gmdEqualizer = 0xE01D
+    case gmdExplicit = 0xE01E
+    case gmdFastForward = 0xE01F
+    case gmdFastRewind = 0xE020
+    case gmdFeaturedPlayList = 0xE06E
+    case gmdFeaturedVideo = 0xE06D
+    case gmdFiberDvr = 0xE05D
+    case gmdFiberManualRecord = 0xE061
+    case gmdFiberNew = 0xE05E
+    case gmdFiberPin = 0xE06A
+    case gmdFiberSmartRecord = 0xE062
+    case gmdForward10 = 0xE056
+    case gmdForward30 = 0xE057
+    case gmdForward5 = 0xE058
+    case gmdGames = 0xE021
+    case gmdHd = 0xE052
+    case gmdHearing = 0xE023
+    case gmdHighQuality = 0xE024
+    case gmdLibraryAdd = 0xE02E
+    case gmdLibraryBooks = 0xE02F
+    case gmdLibraryMusic = 0xE030
+    case gmdLoop = 0xE028
+    case gmdMic = 0xE029
+    case gmdMicNone = 0xE02A
+    case gmdMicOff = 0xE02B
+    case gmdMissedVideoCall = 0xE073
+    case gmdMovie = 0xE02C
+    case gmdMusicVideo = 0xE063
+    case gmdNewReleases = 0xE031
+    case gmdNotInterested = 0xE033
+    case gmdNote = 0xE06F
+    case gmdPause = 0xE034
+    case gmdPauseCircleFilled = 0xE035
+    case gmdPauseCircleOutline = 0xE036
+    case gmdPlayArrow = 0xE037
+    case gmdPlayCircleFilled = 0xE038
+    //case gmdPlayCircleFilledWhite = 0x
+    case gmdPlayCircleOutline = 0xE039
+    case gmdPlaylistAdd = 0xE03B
+    case gmdPlaylistAddCheck = 0xE065
+    case gmdPlaylistPlay = 0xE05F
+    case gmdQueue = 0xE03C
+    case gmdQueueMusic = 0xE03D
+    case gmdQueuePlayNext = 0xE066
+    case gmdRadio = 0xE03E
+    case gmdRecentActors = 0xE03F
+    case gmdRemoveFromQueue = 0xE067
+    case gmdRepeat = 0xE040
+    case gmdRepeatOne = 0xE041
+    case gmdReplay = 0xE042
+    case gmdReplay10 = 0xE059
+    case gmdReplay30 = 0xE05A
+    case gmdReplay5 = 0xE05B
+    case gmdShuffle = 0xE043
+    case gmdSkipNext = 0xE044
+    case gmdSkipPrevious = 0xE045
+    //case gmdSlowMotionVideo = 0x
+    case gmdSnooze = 0xE046
+    case gmdSortByAlpha = 0xE053
+    case gmdStop = 0xE047
+    case gmdSubscriptions = 0xE064
+    case gmdSubtitles = 0xE048
+    case gmdSurroundSound = 0xE049
+    case gmdVideoCall = 0xE070
+    case gmdVideoLabel = 0xE071
+    case gmdVideoLibrary = 0xE04A
+    case gmdVideocam = 0xE04B
+    case gmdVideocamOff = 0xE04C
+    case gmdVolumeDown = 0xE04D
+    case gmdVolumeMute = 0xE04E
+    case gmdVolumeOff = 0xE04F
+    case gmdVolumeUp = 0xE050
+    case gmdWeb = 0xE051
+    case gmdWebAsset = 0xE069
+    case gmdAlternateEmail = 0xE0E6
+    case gmdBusiness = 0xE0AF
+    case gmdCall = 0xE0B0
+    case gmdCallEnd = 0xE0B1
+    case gmdCallMade = 0xE0B2
+    case gmdCallMerge = 0xE0B3
+    case gmdCallMissed = 0xE0B4
+    case gmdCallMissedOutgoing = 0xE0E4
+    case gmdCallReceived = 0xE0B5
+    case gmdCallSplit = 0xE0B6
+    case gmdCancelPresentation = 0xE0E9
+    case gmdCellWifi = 0xE0EC //Note - this isn't quite the same as the icon on material.io - possibly a versioning issue
+    case gmdChat = 0xE0B7
+    case gmdChatBubble = 0xE0CA
+    case gmdChatBubbleOutline = 0xE0CB
+    case gmdClearAll = 0xE0B8
+    case gmdComment = 0xE0B9
+    case gmdContactMail = 0xE0D0
+    case gmdContactPhone = 0xE0CF
+    case gmdContacts = 0xE0BA
+    case gmdDesktopAccessDisabled = 0xE99D
+    case gmdDialerSip = 0xE0BB
+    case gmdDialpad = 0xE0BC
+    case gmdDomainDisabled = 0xE0EF
+    case gmdDuo = 0xE9A5
+    case gmdEmail = 0xE0BE
+    case gmdForum = 0xE0BF
+    case gmdImportContacts = 0xE0E0
+    case gmdImportExport = 0xE0C3
+    case gmdInvertColorsOff = 0xE0C4
+    case gmdListAlt = 0xE0EE
+    case gmdLiveHelp = 0xE0C6
+    case gmdLocationOff = 0xE0C7
+    case gmdLocationOn = 0xE0C8
+    case gmdMailOutline = 0xE0E1
+    case gmdMessage = 0xE0C9
+    case gmdMobileScreenShare = 0xE0E7
+    case gmdNoSim = 0xE0CC
+    case gmdPausePresentation = 0xE0EA
+    case gmdPersonAddDisabled = 0xE9CB
+    case gmdPhone = 0xE0CD
+    case gmdPhonelinkErase = 0xE0DB
+    case gmdPhonelinkLock = 0xE0DC
+    case gmdPhonelinkRing = 0xE0DD
+    case gmdPhonelinkSetup = 0xE0DE
+    case gmdPortableWifiOff = 0xE0CE
+    case gmdPresentToAll = 0xE0DF
+    case gmdPrintDisabled = 0xE9CF
+    case gmdRingVolume = 0xE0D1
+    case gmdRssFeed = 0xE0E5
+    case gmdScreenShare = 0xE0E2
+    case gmdSentimentSatisfiedAlt = 0xE0ED
+    case gmdSpeakerPhone = 0xE0D2
+    case gmdStayCurrentLandscape = 0xE0D3
+    case gmdStayCurrentPortrait = 0xE0D4
+    case gmdStayPrimaryLandscape = 0xE0D5
+    case gmdStayPrimaryPortrait = 0xE0D6
+    case gmdStopScreenShare = 0xE0E3
+    case gmdSwapCalls = 0xE0D7
+    case gmdTextsms = 0xE0D8
+    case gmdUnsubscribe = 0xE0EB
+    case gmdVoicemail = 0xE0D9
+    case gmdVpnKey = 0xE0DA
+    case gmdAdd = 0xE145
+    case gmdAddBox = 0xE146
+    case gmdAddCircle = 0xE147
+    case gmdAddCircleOutline = 0xE148
+    case gmdArchive = 0xE149
+    case gmdBackspace = 0xE14A
+    case gmdBallot = 0xE172
+    case gmdBlock = 0xE14B
+    case gmdClear = 0xE14C
+    case gmdCreate = 0xE150
+    case gmdDeleteSweep = 0xE16C
+    case gmdDrafts = 0xE151
+    case gmdFileCopy = 0xE173
+    case gmdFilterList = 0xE152
+    case gmdFlag = 0xE153
+    case gmdFontDownload = 0xE167
+    case gmdForward = 0xE154
+    case gmdGesture = 0xE155
+    case gmdHowToReg = 0xE174
+    case gmdHowToVote = 0xE175
+    case gmdInbox = 0xE156
+    case gmdLink = 0xE157
+    case gmdLinkOff = 0xE16F
+    case gmdLowPriority = 0xE16D
+    case gmdMail = 0xE158
+    case gmdMarkunread = 0xE159
+    case gmdMoveToInbox = 0xE168
+    case gmdNextWeek = 0xE16A
+    case gmdOutlinedFlag = 0xE16E
+    case gmdRedo = 0xE15A
+    case gmdRemove = 0xE15B
+    case gmdRemoveCircle = 0xE15C
+    case gmdRemoveCircleOutline = 0xE15D
+    case gmdReply = 0xE15E
+    case gmdReplyAll = 0xE15F
+    case gmdReport = 0xE160
+    case gmdReportOff = 0xE170
+    case gmdSave = 0xE161
+    case gmdSaveAlt = 0xE171
+    case gmdSelectAll = 0xE162
+    case gmdSend = 0xE163
+    case gmdSort = 0xE164
+    case gmdTextFormat = 0xE165
+    case gmdUnarchive = 0xE169
+    case gmdUndo = 0xE166
+    case gmdWaves = 0xE176
+    case gmdWeekend = 0xE16B
+    case gmdWhereToVote = 0xE177
+    case gmdAccessAlarm = 0xE190
+    case gmdAccessAlarms = 0xE191
+    case gmdAccessTime = 0xE192
+    case gmdAddAlarm = 0xE193
+    case gmdAddToHomeScreen = 0xE1FE
+    case gmdAirplanemodeActive = 0xE195
+    case gmdAirplanemodeInactive = 0xE194
+    //case gmdBattery20 = 0x
+    //case gmdBattery30 = 0x
+    //case gmdBattery50 = 0x
+    //case gmdBattery60 = 0x
+    //case gmdBattery80 = 0x
+    //case gmdBattery90 = 0x
+    case gmdBatteryAlert = 0xE19C
+    //case gmdBatteryCharging20 = 0x
+    //case gmdBatteryCharging30 = 0x
+    //case gmdBatteryCharging50 = 0x
+    //case gmdBatteryCharging60 = 0x
+    //case gmdBatteryCharging80 = 0x
+    //case gmdBatteryCharging90 = 0x
+    case gmdBatteryChargingFull = 0xE1A3
+    case gmdBatteryFull = 0xE1A4
+    case gmdBatteryStd = 0xE1A5
+    case gmdBatteryUnknown = 0xE1A6
+    case gmdBluetooth = 0xE1A7
+    case gmdBluetoothConnected = 0xE1A8
+    case gmdBluetoothDisabled = 0xE1A9
+    case gmdBluetoothSearching = 0xE1AA
+    case gmdBrightnessAuto = 0xE1AB
+    case gmdBrightnessHigh = 0xE1AC
+    case gmdBrightnessLow = 0xE1AD
+    case gmdBrightnessMedium = 0xE1AE
+    case gmdDataUsage = 0xE1AF
+    case gmdDeveloperMode = 0xE1B0
+    case gmdDevices = 0xE1B1
+    case gmdDvr = 0xE1B2
+    case gmdGpsFixed = 0xE1B3
+    case gmdGpsNotFixed = 0xE1B4
+    case gmdGpsOff = 0xE1B5
+    case gmdGraphicEq = 0xE1B8
+    case gmdLocationDisabled = 0xE1B6
+    case gmdLocationSearching = 0xE1B7
+    case gmdMobileFriendly = 0xE200
+    case gmdMobileOff = 0xE201
+    case gmdNetworkCell = 0xE1B9
+    case gmdNetworkWifi = 0xE1BA
+    case gmdNfc = 0xE1BB
+    case gmdScreenLockLandscape = 0xE1BE
+    case gmdScreenLockPortrait = 0xE1BF
+    case gmdScreenLockRotation = 0xE1C0
+    case gmdScreenRotation = 0xE1C1
+    case gmdSdStorage = 0xE1C2
+    case gmdSettingsSystemDaydream = 0xE1C3
+    //case gmdSignalCellular0Bar = 0x
+    //case gmdSignalCellular1Bar = 0x
+    //case gmdSignalCellular2Bar = 0x
+    //case gmdSignalCellular3Bar = 0x
+    case gmdSignalCellular4Bar = 0xE1C8
+    //case gmdSignalCellularAlt = 0x
+    //case gmdSignalCellularConnectedNoInternet0Bar = 0x
+    //case gmdSignalCellularConnectedNoInternet1Bar = 0x
+    //case gmdSignalCellularConnectedNoInternet2Bar = 0x
+    //case gmdSignalCellularConnectedNoInternet3Bar = 0x
+    case gmdSignalCellularConnectedNoInternet4Bar = 0xE1CD
+    case gmdSignalCellularNoSim = 0xE1CE
+    case gmdSignalCellularNull = 0xE1CF
+    case gmdSignalCellularOff = 0xE1D0
+    //case gmdSignalWifi0Bar = 0x
+    //case gmdSignalWifi1Bar = 0x
+    //case gmdSignalWifi1BarLock = 0x
+    //case gmdSignalWifi2Bar = 0x
+    //case gmdSignalWifi2BarLock = 0x
+    //case gmdSignalWifi3Bar = 0x
+    //case gmdSignalWifi3BarLock = 0x
+    case gmdSignalWifi4Bar = 0xE1D8
+    case gmdSignalWifi4BarLock = 0xE1D9
+    case gmdSignalWifiOff = 0xE1DA
+    case gmdStorage = 0xE1DB
+    case gmdUsb = 0xE1E0
+    case gmdWallpaper = 0xE1BC
+    case gmdWidgets = 0xE1BD
+    case gmdWifiLock = 0xE1E1
+    case gmdWifiTethering = 0xE1E2
+    case gmdAddComment = 0xE266
+    case gmdAttachFile = 0xE226
+    case gmdAttachMoney = 0xE227
+    case gmdBarChart = 0xE26B
+    case gmdBorderAll = 0xE228
+    case gmdBorderBottom = 0xE229
+    case gmdBorderClear = 0xE22A
+    case gmdBorderColor = 0xE22B
+    case gmdBorderHorizontal = 0xE22C
+    case gmdBorderInner = 0xE22D
+    case gmdBorderLeft = 0xE22E
+    case gmdBorderOuter = 0xE22F
+    case gmdBorderRight = 0xE230
+    case gmdBorderStyle = 0xE231
+    case gmdBorderTop = 0xE232
+    case gmdBorderVertical = 0xE233
+    case gmdBubbleChart = 0xE6DD
+    case gmdDragHandle = 0xE25D
+    case gmdFormatAlignCenter = 0xE234
+    case gmdFormatAlignJustify = 0xE235
+    case gmdFormatAlignLeft = 0xE236
+    case gmdFormatAlignRight = 0xE237
+    case gmdFormatBold = 0xE238
+    case gmdFormatClear = 0xE239
+    case gmdFormatColorFill = 0xE23A
+    case gmdFormatColorReset = 0xE23B
+    case gmdFormatColorText = 0xE23C
+    case gmdFormatIndentDecrease = 0xE23D
+    case gmdFormatIndentIncrease = 0xE23E
+    case gmdFormatItalic = 0xE23F
+    case gmdFormatLineSpacing = 0xE240
+    case gmdFormatListBulleted = 0xE241
+    case gmdFormatListNumbered = 0xE242
+    case gmdFormatListNumberedRtl = 0xE267
+    case gmdFormatPaint = 0xE243
+    case gmdFormatQuote = 0xE244
+    case gmdFormatShapes = 0xE25E
+    case gmdFormatSize = 0xE245
+    case gmdFormatStrikethrough = 0xE246
+    case gmdFormatTextdirectionLToR = 0xE247
+    case gmdFormatTextdirectionRToL = 0xE248
+    case gmdFormatUnderlined = 0xE249
+    case gmdFunctions = 0xE24A
+    case gmdHighlight = 0xE25F
+    case gmdInsertChart = 0xE24B
+    case gmdInsertChartOutlined = 0xE26A
+    case gmdInsertComment = 0xE24C
+    case gmdInsertDriveFile = 0xE24D
+    case gmdInsertEmoticon = 0xE24E
+    case gmdInsertInvitation = 0xE24F
+    case gmdInsertLink = 0xE250
+    case gmdInsertPhoto = 0xE251
+    case gmdLinearScale = 0xE260
+    case gmdMergeType = 0xE252
+    case gmdModeComment = 0xE253
+    case gmdMonetizationOn = 0xE263
+    case gmdMoneyOff = 0xE25C
+    case gmdMultilineChart = 0xE6DF
+    case gmdNotes = 0xE26C
+    case gmdPieChart = 0xE64C
+    case gmdPublish = 0xE255
+    case gmdScatterPlot = 0xE268
+    case gmdScore = 0xE269
+    case gmdShortText = 0xE261
+    case gmdShowChart = 0xE6E1
+    case gmdSpaceBar = 0xE256
+    case gmdStrikethroughS = 0xE257
+    case gmdTableChart = 0xE265
+    case gmdTextFields = 0xE262
+    case gmdTitle = 0xE264
+    case gmdVerticalAlignBottom = 0xE258
+    case gmdVerticalAlignCenter = 0xE259
+    case gmdVerticalAlignTop = 0xE25A
+    case gmdWrapText = 0xE25B
+    case gmdAttachment = 0xE2BC
+    case gmdCloud = 0xE2BD
+    case gmdCloudCircle = 0xE2BE
+    case gmdCloudDone = 0xE2BF
+    case gmdCloudDownload = 0xE2C0
+    case gmdCloudOff = 0xE2C1
+    case gmdCloudQueue = 0xE2C2
+    case gmdCloudUpload = 0xE2C3
+    case gmdCreateNewFolder = 0xE2CC
+    case gmdFolder = 0xE2C7
+    case gmdFolderOpen = 0xE2C8
+    case gmdFolderShared = 0xE2C9
+    case gmdCast = 0xE307
+    case gmdCastConnected = 0xE308
+    //case gmdCastForEducation = 0x
+    case gmdComputer = 0xE30A
+    case gmdDesktopMac = 0xE30B
+    case gmdDesktopWindows = 0xE30C
+    case gmdDeveloperBoard = 0xE30D
+    case gmdDeviceHub = 0xE335
+    case gmdDeviceUnknown = 0xE339
+    case gmdDevicesOther = 0xE337
+    case gmdDock = 0xE30E
+    case gmdGamepad = 0xE30F
+    case gmdHeadset = 0xE310
+    case gmdHeadsetMic = 0xE311
+    case gmdKeyboard = 0xE312
+    case gmdKeyboardArrowDown = 0xE313
+    case gmdKeyboardArrowLeft = 0xE314
+    case gmdKeyboardArrowRight = 0xE315
+    case gmdKeyboardArrowUp = 0xE316
+    case gmdKeyboardBackspace = 0xE317
+    case gmdKeyboardCapslock = 0xE318
+    case gmdKeyboardHide = 0xE31A
+    case gmdKeyboardReturn = 0xE31B
+    case gmdKeyboardTab = 0xE31C
+    case gmdKeyboardVoice = 0xE31D
+    case gmdLaptop = 0xE31E
+    case gmdLaptopChromebook = 0xE31F
+    case gmdLaptopMac = 0xE320
+    case gmdLaptopWindows = 0xE321
+    case gmdMemory = 0xE322
+    case gmdMouse = 0xE323
+    case gmdPhoneAndroid = 0xE324
+    case gmdPhoneIphone = 0xE325
+    case gmdPhonelink = 0xE326
+    case gmdPhonelinkOff = 0xE327
+    case gmdPowerInput = 0xE336
+    case gmdRouter = 0xE328
+    case gmdScanner = 0xE329
+    case gmdSecurity = 0xE32A
+    case gmdSimCard = 0xE32B
+    case gmdSmartphone = 0xE32C
+    case gmdSpeaker = 0xE32D
+    case gmdSpeakerGroup = 0xE32E
+    case gmdTablet = 0xE32F
+    case gmdTabletAndroid = 0xE330
+    case gmdTabletMac = 0xE331
+    case gmdToys = 0xE332
+    case gmdTv = 0xE333
+    case gmdVideogameAsset = 0xE338
+    case gmdWatch = 0xE334
+    case gmdAddAPhoto = 0xE439
+    case gmdAddPhotoAlternate = 0xE43E
+    case gmdAddToPhotos = 0xE39D
+    case gmdAdjust = 0xE39E
+    case gmdAssistant = 0xE39F
+    case gmdAssistantPhoto = 0xE3A0
+    case gmdAudiotrack = 0xE3A1
+    case gmdBlurCircular = 0xE3A2
+    case gmdBlurLinear = 0xE3A3
+    case gmdBlurOff = 0xE3A4
+    case gmdBlurOn = 0xE3A5
+    case gmdBrightness1 = 0xE3A6
+    case gmdBrightness2 = 0xE3A7
+    case gmdBrightness3 = 0xE3A8
+    case gmdBrightness4 = 0xE3A9
+    case gmdBrightness5 = 0xE3AA
+    case gmdBrightness6 = 0xE3AB
+    case gmdBrightness7 = 0xE3AC
+    case gmdBrokenImage = 0xE3AD
+    case gmdBrush = 0xE3AE
+    case gmdBurstMode = 0xE43C
+    case gmdCamera = 0xE3AF
+    case gmdCameraAlt = 0xE3B0
+    case gmdCameraFront = 0xE3B1
+    case gmdCameraRear = 0xE3B2
+    case gmdCameraRoll = 0xE3B3
+    case gmdCenterFocusStrong = 0xE3B4
+    case gmdCenterFocusWeak = 0xE3B5
+    case gmdCollections = 0xE3B6
+    case gmdCollectionsBookmark = 0xE431
+    case gmdColorLens = 0xE3B7
+    case gmdColorize = 0xE3B8
+    case gmdCompare = 0xE3B9
+    case gmdControlPoint = 0xE3BA
+    case gmdControlPointDuplicate = 0xE3BB
+    case gmdCrop = 0xE3BE
+    case gmdCrop169 = 0xE3BC
+    case gmdCrop32 = 0xE3BD
+    case gmdCrop54 = 0xE3BF
+    case gmdCrop75 = 0xE3C0
+    case gmdCropDin = 0xE3C1
+    case gmdCropFree = 0xE3C2
+    case gmdCropLandscape = 0xE3C3
+    case gmdCropOriginal = 0xE3C4
+    case gmdCropPortrait = 0xE3C5
+    case gmdCropRotate = 0xE437
+    case gmdCropSquare = 0xE3C6
+    case gmdDehaze = 0xE3C7
+    case gmdDetails = 0xE3C8
+    case gmdEdit = 0xE3C9
+    case gmdExposure = 0xE3CA
+    case gmdExposureNeg1 = 0xE3CB
+    case gmdExposureNeg2 = 0xE3CC
+    case gmdExposurePlus1 = 0xE3CD
+    case gmdExposurePlus2 = 0xE3CE
+    case gmdExposureZero = 0xE3CF
+    case gmdFilter = 0xE3D3
+    case gmdFilter1 = 0xE3D0
+    case gmdFilter2 = 0xE3D1
+    case gmdFilter3 = 0xE3D2
+    case gmdFilter4 = 0xE3D4
+    case gmdFilter5 = 0xE3D5
+    case gmdFilter6 = 0xE3D6
+    case gmdFilter7 = 0xE3D7
+    case gmdFilter8 = 0xE3D8
+    case gmdFilter9 = 0xE3D9
+    case gmdFilter9Plus = 0xE3DA
+    case gmdFilterBAndW = 0xE3DB
+    case gmdFilterCenterFocus = 0xE3DC
+    case gmdFilterDrama = 0xE3DD
+    case gmdFilterFrames = 0xE3DE
+    case gmdFilterHdr = 0xE3DF
+    case gmdFilterNone = 0xE3E0
+    case gmdFilterTiltShift = 0xE3E2
+    case gmdFilterVintage = 0xE3E3
+    case gmdFlare = 0xE3E4
+    case gmdFlashAuto = 0xE3E5
+    case gmdFlashOff = 0xE3E6
+    case gmdFlashOn = 0xE3E7
+    case gmdFlip = 0xE3E8
+    case gmdGradient = 0xE3E9
+    case gmdGrain = 0xE3EA
+    case gmdGridOff = 0xE3EB
+    case gmdGridOn = 0xE3EC
+    case gmdHdrOff = 0xE3ED
+    case gmdHdrOn = 0xE3EE
+    case gmdHdrStrong = 0xE3F1
+    case gmdHdrWeak = 0xE3F2
+    case gmdHealing = 0xE3F3
+    case gmdImage = 0xE3F4
+    case gmdImageAspectRatio = 0xE3F5
+    case gmdImageSearch = 0xE43F
+    case gmdIso = 0xE3F6
+    case gmdLandscape = 0xE3F7
+    case gmdLeakAdd = 0xE3F8
+    case gmdLeakRemove = 0xE3F9
+    case gmdLens = 0xE3FA
+    case gmdLinkedCamera = 0xE438
+    case gmdLooks = 0xE3FC
+    case gmdLooks3 = 0xE3FB
+    case gmdLooks4 = 0xE3FD
+    case gmdLooks5 = 0xE3FE
+    case gmdLooks6 = 0xE3FF
+    case gmdLooksOne = 0xE400
+    case gmdLooksTwo = 0xE401
+    case gmdLoupe = 0xE402
+    case gmdMonochromePhotos = 0xE403
+    case gmdMovieCreation = 0xE404
+    case gmdMovieFilter = 0xE43A
+    case gmdMusicNote = 0xE405
+    case gmdMusicOff = 0xE440
+    case gmdNature = 0xE406
+    case gmdNaturePeople = 0xE407
+    case gmdNavigateBefore = 0xE408
+    case gmdNavigateNext = 0xE409
+    case gmdPalette = 0xE40A
+    case gmdPanorama = 0xE40B
+    case gmdPanoramaFishEye = 0xE40C
+    case gmdPanoramaHorizontal = 0xE40D
+    case gmdPanoramaVertical = 0xE40E
+    case gmdPanoramaWideAngle = 0xE40F
+    case gmdPhoto = 0xE410
+    case gmdPhotoAlbum = 0xE411
+    case gmdPhotoCamera = 0xE412
+    case gmdPhotoFilter = 0xE43B
+    case gmdPhotoLibrary = 0xE413
+    case gmdPhotoSizeSelectActual = 0xE432
+    case gmdPhotoSizeSelectLarge = 0xE433
+    case gmdPhotoSizeSelectSmall = 0xE434
+    case gmdPictureAsPdf = 0xE415
+    case gmdPortrait = 0xE416
+    case gmdRemoveRedEye = 0xE417
+    case gmdRotate90DegreesCcw = 0xE418
+    case gmdRotateLeft = 0xE419
+    case gmdRotateRight = 0xE41A
+    case gmdShutterSpeed = 0xE43D
+    case gmdSlideshow = 0xE41B
+    case gmdStraighten = 0xE41C
+    case gmdStyle = 0xE41D
+    case gmdSwitchCamera = 0xE41E
+    case gmdSwitchVideo = 0xE41F
+    case gmdTagFaces = 0xE420
+    case gmdTexture = 0xE421
+    case gmdTimelapse = 0xE422
+    case gmdTimer = 0xE425
+    case gmdTimer10 = 0xE423
+    case gmdTimer3 = 0xE424
+    case gmdTimerOff = 0xE426
+    case gmdTonality = 0xE427
+    case gmdTransform = 0xE428
+    case gmdTune = 0xE429
+    case gmdViewComfy = 0xE42A
+    case gmdViewCompact = 0xE42B
+    case gmdVignette = 0xE435
+    case gmdWbAuto = 0xE42C
+    case gmdWbCloudy = 0xE42D
+    case gmdWbIncandescent = 0xE42E
+    case gmdWbIridescent = 0xE436
+    case gmdWbSunny = 0xE430
+    case gmd360 = 0xE577
+    case gmdAddLocation = 0xE567
+    case gmdAtm = 0xE573
+    case gmdBeenhere = 0xE52D
+    case gmdCategory = 0xE574
+    case gmdCompassCalibration = 0xE57C
+    case gmdDepartureBoard = 0xE576
+    case gmdDirections = 0xE52E
+    case gmdDirectionsBike = 0xE52F
+    case gmdDirectionsBoat = 0xE532
+    case gmdDirectionsBus = 0xE530
+    case gmdDirectionsCar = 0xE531
+    case gmdDirectionsRailway = 0xE534
+    case gmdDirectionsRun = 0xE566
+    case gmdDirectionsSubway = 0xE533
+    case gmdDirectionsTransit = 0xE535
+    case gmdDirectionsWalk = 0xE536
+    case gmdEditAttributes = 0xE578
+    case gmdEditLocation = 0xE568
+    case gmdEvStation = 0xE56D
+    case gmdFastfood = 0xE57A
+    case gmdFlight = 0xE539
+    case gmdHotel = 0xE53A
+    case gmdLayers = 0xE53B
+    case gmdLayersClear = 0xE53C
+    case gmdLocalActivity = 0xE53F
+    case gmdLocalAirport = 0xE53D
+    case gmdLocalAtm = 0xE53E
+    case gmdLocalBar = 0xE540
+    case gmdLocalCafe = 0xE541
+    case gmdLocalCarWash = 0xE542
+    case gmdLocalConvenienceStore = 0xE543
+    case gmdLocalDining = 0xE556
+    case gmdLocalDrink = 0xE544
+    case gmdLocalFlorist = 0xE545
+    case gmdLocalGasStation = 0xE546
+    case gmdLocalGroceryStore = 0xE547
+    case gmdLocalHospital = 0xE548
+    case gmdLocalHotel = 0xE549
+    case gmdLocalLaundryService = 0xE54A
+    case gmdLocalLibrary = 0xE54B
+    case gmdLocalMall = 0xE54C
+    case gmdLocalMovies = 0xE54D
+    case gmdLocalOffer = 0xE54E
+    case gmdLocalParking = 0xE54F
+    case gmdLocalPharmacy = 0xE550
+    case gmdLocalPhone = 0xE551
+    case gmdLocalPizza = 0xE552
+    case gmdLocalPlay = 0xE553
+    case gmdLocalPostOffice = 0xE554
+    case gmdLocalPrintshop = 0xE555
+    case gmdLocalSee = 0xE557
+    case gmdLocalShipping = 0xE558
+    case gmdLocalTaxi = 0xE559
+    case gmdMap = 0xE55B
+    case gmdMoney = 0xE57D
+    case gmdMyLocation = 0xE55C
+    case gmdNavigation = 0xE55D
+    case gmdNearMe = 0xE569
+    case gmdNotListedLocation = 0xE575
+    case gmdPersonPin = 0xE55A
+    case gmdPersonPinCircle = 0xE56A
+    case gmdPinDrop = 0xE55E
+    case gmdPlace = 0xE55F
+    case gmdRateReview = 0xE560
+    case gmdRestaurant = 0xE56C
+    case gmdRestaurantMenu = 0xE561
+    case gmdSatellite = 0xE562
+    case gmdStoreMallDirectory = 0xE563
+    case gmdStreetview = 0xE56E
+    case gmdSubway = 0xE56F
+    case gmdTerrain = 0xE564
+    case gmdTraffic = 0xE565
+    case gmdTrain = 0xE570
+    case gmdTram = 0xE571
+    case gmdTransferWithinAStation = 0xE572
+    case gmdTransitEnterexit = 0xE579
+    case gmdTripOrigin = 0xE57B
+    case gmdZoomOutMap = 0xE56B
+    case gmdApps = 0xE5C3
+    case gmdArrowBack = 0xE5C4
+    case gmdArrowBackIos = 0xE5E0
+    case gmdArrowDownward = 0xE5DB
+    case gmdArrowDropDown = 0xE5C5
+    case gmdArrowDropDownCircle = 0xE5C6
+    case gmdArrowDropUp = 0xE5C7
+    case gmdArrowForward = 0xE5C8
+    case gmdArrowForwardIos = 0xE5E1
+    case gmdArrowLeft = 0xE5DE
+    case gmdArrowRight = 0xE5DF
+    case gmdArrowUpward = 0xE5D8
+    case gmdCancel = 0xE5C9
+    case gmdCheck = 0xE5CA
+    case gmdChevronLeft = 0xE5CB
+    case gmdChevronRight = 0xE5CC
+    case gmdClose = 0xE5CD
+    case gmdExpandLess = 0xE5CE
+    case gmdExpandMore = 0xE5CF
+    case gmdFirstPage = 0xE5DC
+    case gmdFullscreen = 0xE5D0
+    case gmdFullscreenExit = 0xE5D1
+    case gmdLastPage = 0xE5DD
+    case gmdMenu = 0xE5D2
+    case gmdMoreHoriz = 0xE5D3
+    case gmdMoreVert = 0xE5D4
+    case gmdRefresh = 0xE5D5
+    case gmdSubdirectoryArrowLeft = 0xE5D9
+    case gmdSubdirectoryArrowRight = 0xE5DA
+    case gmdUnfoldLess = 0xE5D6
+    case gmdUnfoldMore = 0xE5D7
+    case gmdAdb = 0xE60E
+    case gmdAirlineSeatFlat = 0xE630
+    case gmdAirlineSeatFlatAngled = 0xE631
+    case gmdAirlineSeatIndividualSuite = 0xE632
+    case gmdAirlineSeatLegroomExtra = 0xE633
+    case gmdAirlineSeatLegroomNormal = 0xE634
+    case gmdAirlineSeatLegroomReduced = 0xE635
+    case gmdAirlineSeatReclineExtra = 0xE636
+    case gmdAirlineSeatReclineNormal = 0xE637
+    case gmdBluetoothAudio = 0xE60F
+    case gmdConfirmationNumber = 0xE638
+    case gmdDiscFull = 0xE610
+    case gmdDriveEta = 0xE613
+    case gmdEnhancedEncryption = 0xE63F
+    case gmdEventAvailable = 0xE614
+    case gmdEventBusy = 0xE615
+    case gmdEventNote = 0xE616
+    case gmdFolderSpecial = 0xE617
+    case gmdLiveTv = 0xE639
+    case gmdMms = 0xE618
+    case gmdMore = 0xE619
+    case gmdNetworkCheck = 0xE640
+    case gmdNetworkLocked = 0xE61A
+    case gmdNoEncryption = 0xE641
+    case gmdOndemandVideo = 0xE63A
+    case gmdPersonalVideo = 0xE63B
+    case gmdPhoneBluetoothSpeaker = 0xE61B
+    case gmdPhoneCallback = 0xE649
+    case gmdPhoneForwarded = 0xE61C
+    case gmdPhoneInTalk = 0xE61D
+    case gmdPhoneLocked = 0xE61E
+    case gmdPhoneMissed = 0xE61F
+    case gmdPhonePaused = 0xE620
+    case gmdPower = 0xE63C
+    case gmdPowerOff = 0xE646
+    case gmdPriorityHigh = 0xE645
+    case gmdSdCard = 0xE623
+    case gmdSms = 0xE625
+    case gmdSmsFailed = 0xE626
+    case gmdSync = 0xE627
+    case gmdSyncDisabled = 0xE628
+    case gmdSyncProblem = 0xE629
+    case gmdSystemUpdate = 0xE62A
+    case gmdTapAndPlay = 0xE62B
+    case gmdTimeToLeave = 0xE62C
+    case gmdTvOff = 0xE647
+    case gmdVibration = 0xE62D
+    case gmdVoiceChat = 0xE62E
+    case gmdVpnLock = 0xE62F
+    case gmdWc = 0xE63D
+    case gmdWifi = 0xE63E
+    case gmdWifiOff = 0xE648
+    case gmdAcUnit = 0xEB3B
+    case gmdAirportShuttle = 0xEB3C
+    case gmdAllInclusive = 0xEB3D
+    case gmdBeachAccess = 0xEB3E
+    case gmdBusinessCenter = 0xEB3F
+    case gmdCasino = 0xEB40
+    case gmdChildCare = 0xEB41
+    case gmdChildFriendly = 0xEB42
+    case gmdFitnessCenter = 0xEB43
+    case gmdFreeBreakfast = 0xEB44
+    case gmdGolfCourse = 0xEB45
+    case gmdHotTub = 0xEB46
+    case gmdKitchen = 0xEB47
+    case gmdMeetingRoom = 0xEB4F
+    case gmdNoMeetingRoom = 0xEB4E
+    case gmdPool = 0xEB48
+    case gmdRoomService = 0xEB49
+    case gmdRvHookup = 0xE642
+    case gmdSmokeFree = 0xEB4A
+    case gmdSmokingRooms = 0xEB4B
+    case gmdSpa = 0xEB4C
+    case gmdCake = 0xE7E9
+    case gmdDomain = 0xE7EE
+    case gmdGroup = 0xE7EF
+    case gmdGroupAdd = 0xE7F0
+    case gmdLocationCity = 0xE7F1
+    case gmdMood = 0xE7F2
+    case gmdMoodBad = 0xE7F3
+    case gmdNotifications = 0xE7F4
+    case gmdNotificationsActive = 0xE7F7
+    case gmdNotificationsNone = 0xE7F5
+    case gmdNotificationsOff = 0xE7F6
+    case gmdNotificationsPaused = 0xE7F8
+    case gmdPages = 0xE7F9
+    case gmdPartyMode = 0xE7FA
+    case gmdPeople = 0xE7FB
+    case gmdPeopleOutline = 0xE7FC
+    case gmdPerson = 0xE7FD
+    case gmdPersonAdd = 0xE7FE
+    case gmdPersonOutline = 0xE7FF
+    case gmdPlusOne = 0xE800
+    case gmdPoll = 0xE801
+    case gmdPublic = 0xE80B
+    case gmdSchool = 0xE80C
+    case gmdSentimentDissatisfied = 0xE811
+    case gmdSentimentSatisfied = 0xE813
+    case gmdSentimentVeryDissatisfied = 0xE814
+    case gmdSentimentVerySatisfied = 0xE815
+    case gmdShare = 0xE80D
+    case gmdThumbDownAlt = 0xE816
+    case gmdThumbUpAlt = 0xE817
+    case gmdWhatshot = 0xE80E
+    case gmdCheckBox = 0xE834
+    case gmdCheckBoxOutlineBlank = 0xE835
+    case gmdIndeterminateCheckBox = 0xE909
+    case gmdRadioButtonChecked = 0xE837
+    case gmdRadioButtonUnchecked = 0xE836
+    case gmdStar = 0xE838
+    case gmdStarBorder = 0xE83A
+    case gmdStarHalf = 0xE839
+    case gmdToggleOff = 0xE9F5
+    case gmdToggleOn = 0xE9F6
+    
     
     static var count: Int {
-        
-        return GMDIcons.count
+        return GMDType.allCases.count
     }
     
-    var text: String? {
-        
-        return GMDIcons[rawValue]
+    public var text: String {
+        return String(utf16CodeUnits: [UInt16(rawValue)], count: 1)
     }
     
-    case GMD3DRotation, GMDAccessibility, GMDAccountBalance, GMDAccountBalanceWallet, GMDAccountBox, GMDAccountCircle, GMDAddShoppingCart, GMDAlarm, GMDAlarmAdd, GMDAlarmOff, GMDAlarmOn, GMDAndroid, GMDAnnouncement, GMDAspectRatio, GMDAssessment, GMDAssignment, GMDAssignmentInd, GMDAssignmentLate, GMDAssignmentReturn, GMDAssignmentReturned, GMDAssignmentTurnedIn, GMDAutorenew, GMDBackup, GMDBook, GMDBookmark, GMDBookmarkBorder, GMDBugReport, GMDBuild, GMDCached, GMDCameraEnhance, GMDCardGiftcard, GMDCardMembership, GMDCardTravel, GMDChangeHistory, GMDCheckCircle, GMDChromeReaderMode, GMDClass, GMDCode, GMDCreditCard, GMDDashboard, GMDDelete, GMDDescription, GMDDns, GMDDone, GMDDoneAll, GMDEject, GMDEvent, GMDEventSeat, GMDExitToApp, GMDExplore, GMDExtension, GMDFace, GMDFavorite, GMDFavoriteBorder, GMDFeedback, GMDFindInPage, GMDFindReplace, GMDFlightLand, GMDFlightTakeoff, GMDFlipToBack, GMDFlipToFront, GMDGetApp, GMDGif, GMDGrade, GMDGroupWork, GMDHelp, GMDHelpOutline, GMDHighlightOff, GMDHistory, GMDHome, GMDHourglassEmpty, GMDHourglassFull, GMDHttp, GMDHttps, GMDInfo, GMDInfoOutline, GMDInput, GMDInvertColors, GMDLabel, GMDLabelOutline, GMDLanguage, GMDLaunch, GMDList, GMDLock, GMDLockOpen, GMDLockOutline, GMDLoyalty, GMDMarkunreadMailbox, GMDNoteAdd, GMDOfflinePin, GMDOpenInBrowser, GMDOpenInNew, GMDOpenWith, GMDPageview, GMDPayment, GMDPermCameraMic, GMDPermContactCalendar, GMDPermDataSetting, GMDPermDeviceInformation, GMDPermIdentity, GMDPermMedia, GMDPermPhoneMsg, GMDPermScanWifi, GMDPictureInPicture, GMDPlayForWork, GMDPolymer, GMDPowerSettingsNew, GMDPrint, GMDQueryBuilder, GMDQuestionAnswer, GMDReceipt, GMDRedeem, GMDReorder, GMDReportProblem, GMDRestore, GMDRoom, GMDSchedule, GMDSearch, GMDSettings, GMDSettingsApplications, GMDSettingsBackupRestore, GMDSettingsBluetooth, GMDSettingsBrightness, GMDSettingsCell, GMDSettingsEthernet, GMDSettingsInputAntenna, GMDSettingsInputComponent, GMDSettingsInputComposite, GMDSettingsInputHdmi, GMDSettingsInputSvideo, GMDSettingsOverscan, GMDSettingsPhone, GMDSettingsPower, GMDSettingsRemote, GMDSettingsVoice, GMDShop, GMDShopTwo, GMDShoppingBasket, GMDShoppingCart, GMDSpeakerNotes, GMDSpellcheck, GMDStarRate, GMDStars, GMDStore, GMDSubject, GMDSupervisorAccount, GMDSwapHoriz, GMDSwapVert, GMDSwapVerticalCircle, GMDSystemUpdateAlt, GMDTab, GMDTabUnselected, GMDTheaters, GMDThumbDown, GMDThumbUp, GMDThumbsUpDown, GMDToc, GMDToday, GMDToll, GMDTrackChanges, GMDTranslate, GMDTrendingDown, GMDTrendingFlat, GMDTrendingUp, GMDTurnedIn, GMDTurnedInNot, GMDVerifiedUser, GMDViewAgenda, GMDViewArray, GMDViewCarousel, GMDViewColumn, GMDViewDay, GMDViewHeadline, GMDViewList, GMDViewModule, GMDViewQuilt, GMDViewStream, GMDViewWeek, GMDVisibility, GMDVisibilityOff, GMDWork, GMDYoutubeSearchedFor, GMDZoomIn, GMDZoomOut, GMDAddAlert, GMDError, GMDErrorOutline, GMDWarning, GMDAirplay, GMDAlbum, GMDAvTimer, GMDClosedCaption, GMDEqualizer, GMDExplicit, GMDFastForward, GMDFastRewind, GMDForward10, GMDForward30, GMDForward5, GMDGames, GMDHd, GMDHearing, GMDHighQuality, GMDLibraryAdd, GMDLibraryBooks, GMDLibraryMusic, GMDLoop, GMDMic, GMDMicNone, GMDMicOff, GMDMovie, GMDNewReleases, GMDNotInterested, GMDPause, GMDPauseCircleFilled, GMDPauseCircleOutline, GMDPlayArrow, GMDPlayCircleFilled, GMDPlayCircleOutline, GMDPlaylistAdd, GMDQueue, GMDQueueMusic, GMDRadio, GMDRecentActors, GMDRepeat, GMDRepeatOne, GMDReplay, GMDReplay10, GMDReplay30, GMDReplay5, GMDShuffle, GMDSkipNext, GMDSkipPrevious, GMDSnooze, GMDSortByAlpha, GMDStop, GMDSubtitles, GMDSurroundSound, GMDVideoLibrary, GMDVideocam, GMDVideocamOff, GMDVolumeDown, GMDVolumeMute, GMDVolumeOff, GMDVolumeUp, GMDWeb, GMDBusiness, GMDCall, GMDCallEnd, GMDCallMade, GMDCallMerge, GMDCallMissed, GMDCallReceived, GMDCallSplit, GMDChat, GMDChatBubble, GMDChatBubbleOutline, GMDClearAll, GMDComment, GMDContactPhone, GMDContacts, GMDDialerSip, GMDDialpad, GMDEmail, GMDForum, GMDImportExport, GMDInvertColorsOff, GMDLiveHelp, GMDLocationOff, GMDLocationOn, GMDMessage, GMDNoSim, GMDPhone, GMDPhonelinkErase, GMDPhonelinkLock, GMDPhonelinkRing, GMDPhonelinkSetup, GMDPortableWifiOff, GMDPresentToAll, GMDRingVolume, GMDSpeakerPhone, GMDStayCurrentLandscape, GMDStayCurrentPortrait, GMDStayPrimaryLandscape, GMDStayPrimaryPortrait, GMDSwapCalls, GMDTextsms, GMDVoicemail, GMDVpnKey, GMDAdd, GMDAddBox, GMDAddCircle, GMDAddCircleOutline, GMDArchive, GMDBackspace, GMDBlock, GMDClear, GMDContentCopy, GMDContentCut, GMDContentPaste, GMDCreate, GMDDrafts, GMDFilterList, GMDFlag, GMDFontDownload, GMDForward, GMDGesture, GMDInbox, GMDLink, GMDMail, GMDMarkunread, GMDRedo, GMDRemove, GMDRemoveCircle, GMDRemoveCircleOutline, GMDReply, GMDReplyAll, GMDReport, GMDSave, GMDSelectAll, GMDSend, GMDSort, GMDTextFormat, GMDUndo, GMDAccessAlarm, GMDAccessAlarms, GMDAccessTime, GMDAddAlarm, GMDAirplanemodeActive, GMDAirplanemodeInactive, GMDBatteryAlert, GMDBatteryChargingFull, GMDBatteryFull, GMDBatteryStd, GMDBatteryUnknown, GMDBluetooth, GMDBluetoothConnected, GMDBluetoothDisabled, GMDBluetoothSearching, GMDBrightnessAuto, GMDBrightnessHigh, GMDBrightnessLow, GMDBrightnessMedium, GMDDataUsage, GMDDeveloperMode, GMDDevices, GMDDvr, GMDGpsFixed, GMDGpsNotFixed, GMDGpsOff, GMDGraphicEq, GMDLocationDisabled, GMDLocationSearching, GMDNetworkCell, GMDNetworkWifi, GMDNfc, GMDScreenLockLandscape, GMDScreenLockPortrait, GMDScreenLockRotation, GMDScreenRotation, GMDSdStorage, GMDSettingsSystemDaydream, GMDSignalCellular4Bar, GMDSignalCellularConnectedNoInternet4Bar, GMDSignalCellularNoSim, GMDSignalCellularNull, GMDSignalCellularOff, GMDSignalWifi4Bar, GMDSignalWifi4BarLock, GMDSignalWifiOff, GMDStorage, GMDUsb, GMDWallpaper, GMDWidgets, GMDWifiLock, GMDWifiTethering, GMDAttachFile, GMDAttachMoney, GMDBorderAll, GMDBorderBottom, GMDBorderClear, GMDBorderColor, GMDBorderHorizontal, GMDBorderInner, GMDBorderLeft, GMDBorderOuter, GMDBorderRight, GMDBorderStyle, GMDBorderTop, GMDBorderVertical, GMDFormatAlignCenter, GMDFormatAlignJustify, GMDFormatAlignLeft, GMDFormatAlignRight, GMDFormatBold, GMDFormatClear, GMDFormatColorFill, GMDFormatColorReset, GMDFormatColorText, GMDFormatIndentDecrease, GMDFormatIndentIncrease, GMDFormatItalic, GMDFormatLineSpacing, GMDFormatListBulleted, GMDFormatListNumbered, GMDFormatPaint, GMDFormatQuote, GMDFormatSize, GMDFormatStrikethrough, GMDFormatTextdirectionLToR, GMDFormatTextdirectionRToL, GMDFormatUnderlined, GMDFunctions, GMDInsertChart, GMDInsertComment, GMDInsertDriveFile, GMDInsertEmoticon, GMDInsertInvitation, GMDInsertLink, GMDInsertPhoto, GMDMergeType, GMDModeComment, GMDModeEdit, GMDMoneyOff, GMDPublish, GMDSpaceBar, GMDStrikethroughS, GMDVerticalAlignBottom, GMDVerticalAlignCenter, GMDVerticalAlignTop, GMDWrapText, GMDAttachment, GMDCloud, GMDCloudCircle, GMDCloudDone, GMDCloudDownload, GMDCloudOff, GMDCloudQueue, GMDCloudUpload, GMDFileDownload, GMDFileUpload, GMDFolder, GMDFolderOpen, GMDFolderShared, GMDCast, GMDCastConnected, GMDComputer, GMDDesktopMac, GMDDesktopWindows, GMDDeveloperBoard, GMDDeviceHub, GMDDock, GMDGamepad, GMDHeadset, GMDHeadsetMic, GMDKeyboard, GMDKeyboardArrowDown, GMDKeyboardArrowLeft, GMDKeyboardArrowRight, GMDKeyboardArrowUp, GMDKeyboardBackspace, GMDKeyboardCapslock, GMDKeyboardHide, GMDKeyboardReturn, GMDKeyboardTab, GMDKeyboardVoice, GMDLaptop, GMDLaptopChromebook, GMDLaptopMac, GMDLaptopWindows, GMDMemory, GMDMouse, GMDPhoneAndroid, GMDPhoneIphone, GMDPhonelink, GMDPhonelinkOff, GMDPowerInput, GMDRouter, GMDScanner, GMDSecurity, GMDSimCard, GMDSmartphone, GMDSpeaker, GMDSpeakerGroup, GMDTablet, GMDTabletAndroid, GMDTabletMac, GMDToys, GMDTv, GMDWatch, GMDAddToPhotos, GMDAdjust, GMDAssistant, GMDAssistantPhoto, GMDAudiotrack, GMDBlurCircular, GMDBlurLinear, GMDBlurOff, GMDBlurOn, GMDBrightness1, GMDBrightness2, GMDBrightness3, GMDBrightness4, GMDBrightness5, GMDBrightness6, GMDBrightness7, GMDBrokenImage, GMDBrush, GMDCamera, GMDCameraAlt, GMDCameraFront, GMDCameraRear, GMDCameraRoll, GMDCenterFocusStrong, GMDCenterFocusWeak, GMDCollections, GMDCollectionsBookmark, GMDColorLens, GMDColorize, GMDCompare, GMDControlPoint, GMDControlPointDuplicate, GMDCrop, GMDCrop169, GMDCrop32, GMDCrop54, GMDCrop75, GMDCropDin, GMDCropFree, GMDCropLandscape, GMDCropOriginal, GMDCropPortrait, GMDCropSquare, GMDDehaze, GMDDetails, GMDEdit, GMDExposure, GMDExposureNeg1, GMDExposureNeg2, GMDExposurePlus1, GMDExposurePlus2, GMDExposureZero, GMDFilter, GMDFilter1, GMDFilter2, GMDFilter3, GMDFilter4, GMDFilter5, GMDFilter6, GMDFilter7, GMDFilter8, GMDFilter9, GMDFilter9Plus, GMDFilterBAndW, GMDFilterCenterFocus, GMDFilterDrama, GMDFilterFrames, GMDFilterHdr, GMDFilterNone, GMDFilterTiltShift, GMDFilterVintage, GMDFlare, GMDFlashAuto, GMDFlashOff, GMDFlashOn, GMDFlip, GMDGradient, GMDGrain, GMDGridOff, GMDGridOn, GMDHdrOff, GMDHdrOn, GMDHdrStrong, GMDHdrWeak, GMDHealing, GMDImage, GMDImageAspectRatio, GMDIso, GMDLandscape, GMDLeakAdd, GMDLeakRemove, GMDLens, GMDLooks, GMDLooks3, GMDLooks4, GMDLooks5, GMDLooks6, GMDLooksOne, GMDLooksTwo, GMDLoupe, GMDMonochromePhotos, GMDMovieCreation, GMDMusicNote, GMDNature, GMDNaturePeople, GMDNavigateBefore, GMDNavigateNext, GMDPalette, GMDPanorama, GMDPanoramaFishEye, GMDPanoramaHorizontal, GMDPanoramaVertical, GMDPanoramaWideAngle, GMDPhoto, GMDPhotoAlbum, GMDPhotoCamera, GMDPhotoLibrary, GMDPhotoSizeSelectActual, GMDPhotoSizeSelectLarge, GMDPhotoSizeSelectSmall, GMDPictureAsPdf, GMDPortrait, GMDRemoveRedEye, GMDRotate90DegreesCcw, GMDRotateLeft, GMDRotateRight, GMDSlideshow, GMDStraighten, GMDStyle, GMDSwitchCamera, GMDSwitchVideo, GMDTagFaces, GMDTexture, GMDTimelapse, GMDTimer, GMDTimer10, GMDTimer3, GMDTimerOff, GMDTonality, GMDTransform, GMDTune, GMDViewComfy, GMDViewCompact, GMDVignette, GMDWbAuto, GMDWbCloudy, GMDWbIncandescent, GMDWbIridescent, GMDWbSunny, GMDBeenhere, GMDDirections, GMDDirectionsBike, GMDDirectionsBoat, GMDDirectionsBus, GMDDirectionsCar, GMDDirectionsRailway, GMDDirectionsRun, GMDDirectionsSubway, GMDDirectionsTransit, GMDDirectionsWalk, GMDFlight, GMDHotel, GMDLayers, GMDLayersClear, GMDLocalActivity, GMDLocalAirport, GMDLocalAtm, GMDLocalBar, GMDLocalCafe, GMDLocalCarWash, GMDLocalConvenienceStore, GMDLocalDining, GMDLocalDrink, GMDLocalFlorist, GMDLocalGasStation, GMDLocalGroceryStore, GMDLocalHospital, GMDLocalHotel, GMDLocalLaundryService, GMDLocalLibrary, GMDLocalMall, GMDLocalMovies, GMDLocalOffer, GMDLocalParking, GMDLocalPharmacy, GMDLocalPhone, GMDLocalPizza, GMDLocalPlay, GMDLocalPostOffice, GMDLocalPrintshop, GMDLocalSee, GMDLocalShipping, GMDLocalTaxi, GMDMap, GMDMyLocation, GMDNavigation, GMDPersonPin, GMDPinDrop, GMDPlace, GMDRateReview, GMDRestaurantMenu, GMDSatellite, GMDStoreMallDirectory, GMDTerrain, GMDTraffic, GMDApps, GMDArrowBack, GMDArrowDropDown, GMDArrowDropDownCircle, GMDArrowDropUp, GMDArrowForward, GMDCancel, GMDCheck, GMDChevronLeft, GMDChevronRight, GMDClose, GMDExpandLess, GMDExpandMore, GMDFullscreen, GMDFullscreenExit, GMDMenu, GMDMoreHoriz, GMDMoreVert, GMDRefresh, GMDAdb, GMDAirlineSeatFlat, GMDAirlineSeatFlatAngled, GMDAirlineSeatIndividualSuite, GMDAirlineSeatLegroomExtra, GMDAirlineSeatLegroomNormal, GMDAirlineSeatLegroomReduced, GMDAirlineSeatReclineExtra, GMDAirlineSeatReclineNormal, GMDBluetoothAudio, GMDConfirmationNumber, GMDDiscFull, GMDDoNotDisturb, GMDDoNotDisturbAlt, GMDDriveEta, GMDEventAvailable, GMDEventBusy, GMDEventNote, GMDFolderSpecial, GMDLiveTv, GMDMms, GMDMore, GMDNetworkLocked, GMDOndemandVideo, GMDPersonalVideo, GMDPhoneBluetoothSpeaker, GMDPhoneForwarded, GMDPhoneInTalk, GMDPhoneLocked, GMDPhoneMissed, GMDPhonePaused, GMDPower, GMDSdCard, GMDSimCardAlert, GMDSms, GMDSmsFailed, GMDSync, GMDSyncDisabled, GMDSyncProblem, GMDSystemUpdate, GMDTapAndPlay, GMDTimeToLeave, GMDVibration, GMDVoiceChat, GMDVpnLock, GMDWc, GMDWifi, GMDCake, GMDDomain, GMDGroup, GMDGroupAdd, GMDLocationCity, GMDMood, GMDMoodBad, GMDNotifications, GMDNotificationsActive, GMDNotificationsNone, GMDNotificationsOff, GMDNotificationsPaused, GMDPages, GMDPartyMode, GMDPeople, GMDPeopleOutline, GMDPerson, GMDPersonAdd, GMDPersonOutline, GMDPlusOne, GMDPoll, GMDPublic, GMDSchool, GMDShare, GMDWhatshot, GMDCheckBox, GMDCheckBoxOutlineBlank, GMDIndeterminateCheckBox, GMDRadioButtonChecked, GMDRadioButtonUnchecked, GMDStar, GMDStarBorder, GMDStarHalf
+    static func showAll() {
+        for item in GMDType.allCases {
+            let number = item.text.utf16.first!
+            let hex = String(format:"%02X", number)
+            print("case \(item) = 0x\(hex),")
+        }
+    }
+    
+    static func font() -> UIFont {
+        return UIFont(name: GMDStruct.FontName, size: 23)!
+    }
+    
     
 }
 
-private let GMDIcons = ["\u{e84d}", "\u{e84e}", "\u{e84f}", "\u{e850}", "\u{e851}", "\u{e853}", "\u{e854}", "\u{e855}", "\u{e856}", "\u{e857}", "\u{e858}", "\u{e859}", "\u{e85a}", "\u{e85b}", "\u{e85c}", "\u{e85d}", "\u{e85e}", "\u{e85f}", "\u{e860}", "\u{e861}", "\u{e862}", "\u{e863}", "\u{e864}", "\u{e865}", "\u{e866}", "\u{e867}", "\u{e868}", "\u{e869}", "\u{e86a}", "\u{e8fc}", "\u{e8f6}", "\u{e8f7}", "\u{e8f8}", "\u{e86b}", "\u{e86c}", "\u{e86d}", "\u{e86e}", "\u{e86f}", "\u{e870}", "\u{e871}", "\u{e872}", "\u{e873}", "\u{e875}", "\u{e876}", "\u{e877}", "\u{e8fb}", "\u{e878}", "\u{e903}", "\u{e879}", "\u{e87a}", "\u{e87b}", "\u{e87c}", "\u{e87d}", "\u{e87e}", "\u{e87f}", "\u{e880}", "\u{e881}", "\u{e904}", "\u{e905}", "\u{e882}", "\u{e883}", "\u{e884}", "\u{e908}", "\u{e885}", "\u{e886}", "\u{e887}", "\u{e8fd}", "\u{e888}", "\u{e889}", "\u{e88a}", "\u{e88b}", "\u{e88c}", "\u{e902}", "\u{e88d}", "\u{e88e}", "\u{e88f}", "\u{e890}", "\u{e891}", "\u{e892}", "\u{e893}", "\u{e894}", "\u{e895}", "\u{e896}", "\u{e897}", "\u{e898}", "\u{e899}", "\u{e89a}", "\u{e89b}", "\u{e89c}", "\u{e90a}", "\u{e89d}", "\u{e89e}", "\u{e89f}", "\u{e8a0}", "\u{e8a1}", "\u{e8a2}", "\u{e8a3}", "\u{e8a4}", "\u{e8a5}", "\u{e8a6}", "\u{e8a7}", "\u{e8a8}", "\u{e8a9}", "\u{e8aa}", "\u{e906}", "\u{e8ab}", "\u{e8ac}", "\u{e8ad}", "\u{e8ae}", "\u{e8af}", "\u{e8b0}", "\u{e8b1}", "\u{e8fe}", "\u{e8b2}", "\u{e8b3}", "\u{e8b4}", "\u{e8b5}", "\u{e8b6}", "\u{e8b8}", "\u{e8b9}", "\u{e8ba}", "\u{e8bb}", "\u{e8bd}", "\u{e8bc}", "\u{e8be}", "\u{e8bf}", "\u{e8c0}", "\u{e8c1}", "\u{e8c2}", "\u{e8c3}", "\u{e8c4}", "\u{e8c5}", "\u{e8c6}", "\u{e8c7}", "\u{e8c8}", "\u{e8c9}", "\u{e8ca}", "\u{e8cb}", "\u{e8cc}", "\u{e8cd}", "\u{e8ce}", "\u{e8cf}", "\u{e8d0}", "\u{e8d1}", "\u{e8d2}", "\u{e8d3}", "\u{e8d4}", "\u{e8d5}", "\u{e8d6}", "\u{e8d7}", "\u{e8d8}", "\u{e8d9}", "\u{e8da}", "\u{e8db}", "\u{e8dc}", "\u{e8dd}", "\u{e8de}", "\u{e8df}", "\u{e8e0}", "\u{e8e1}", "\u{e8e2}", "\u{e8e3}", "\u{e8e4}", "\u{e8e5}", "\u{e8e6}", "\u{e8e7}", "\u{e8e8}", "\u{e8e9}", "\u{e8ea}", "\u{e8eb}", "\u{e8ec}", "\u{e8ed}", "\u{e8ee}", "\u{e8ef}", "\u{e8f0}", "\u{e8f1}", "\u{e8f2}", "\u{e8f3}", "\u{e8f4}", "\u{e8f5}", "\u{e8f9}", "\u{e8fa}", "\u{e8ff}", "\u{e900}", "\u{e003}", "\u{e000}", "\u{e001}", "\u{e002}", "\u{e055}", "\u{e019}", "\u{e01b}", "\u{e01c}", "\u{e01d}", "\u{e01e}", "\u{e01f}", "\u{e020}", "\u{e056}", "\u{e057}", "\u{e058}", "\u{e021}", "\u{e052}", "\u{e023}", "\u{e024}", "\u{e02e}", "\u{e02f}", "\u{e030}", "\u{e028}", "\u{e029}", "\u{e02a}", "\u{e02b}", "\u{e02c}", "\u{e031}", "\u{e033}", "\u{e034}", "\u{e035}", "\u{e036}", "\u{e037}", "\u{e038}", "\u{e039}", "\u{e03b}", "\u{e03c}", "\u{e03d}", "\u{e03e}", "\u{e03f}", "\u{e040}", "\u{e041}", "\u{e042}", "\u{e059}", "\u{e05a}", "\u{e05b}", "\u{e043}", "\u{e044}", "\u{e045}", "\u{e046}", "\u{e053}", "\u{e047}", "\u{e048}", "\u{e049}", "\u{e04a}", "\u{e04b}", "\u{e04c}", "\u{e04d}", "\u{e04e}", "\u{e04f}", "\u{e050}", "\u{e051}", "\u{e0af}", "\u{e0b0}", "\u{e0b1}", "\u{e0b2}", "\u{e0b3}", "\u{e0b4}", "\u{e0b5}", "\u{e0b6}", "\u{e0b7}", "\u{e0ca}", "\u{e0cb}", "\u{e0b8}", "\u{e0b9}", "\u{e0cf}", "\u{e0ba}", "\u{e0bb}", "\u{e0bc}", "\u{e0be}", "\u{e0bf}", "\u{e0c3}", "\u{e0c4}", "\u{e0c6}", "\u{e0c7}", "\u{e0c8}", "\u{e0c9}", "\u{e0cc}", "\u{e0cd}", "\u{e0db}", "\u{e0dc}", "\u{e0dd}", "\u{e0de}", "\u{e0ce}", "\u{e0df}", "\u{e0d1}", "\u{e0d2}", "\u{e0d3}", "\u{e0d4}", "\u{e0d5}", "\u{e0d6}", "\u{e0d7}", "\u{e0d8}", "\u{e0d9}", "\u{e0da}", "\u{e145}", "\u{e146}", "\u{e147}", "\u{e148}", "\u{e149}", "\u{e14a}", "\u{e14b}", "\u{e14c}", "\u{e14d}", "\u{e14e}", "\u{e14f}", "\u{e150}", "\u{e151}", "\u{e152}", "\u{e153}", "\u{e167}", "\u{e154}", "\u{e155}", "\u{e156}", "\u{e157}", "\u{e158}", "\u{e159}", "\u{e15a}", "\u{e15b}", "\u{e15c}", "\u{e15d}", "\u{e15e}", "\u{e15f}", "\u{e160}", "\u{e161}", "\u{e162}", "\u{e163}", "\u{e164}", "\u{e165}", "\u{e166}", "\u{e190}", "\u{e191}", "\u{e192}", "\u{e193}", "\u{e195}", "\u{e194}", "\u{e19c}", "\u{e1a3}", "\u{e1a4}", "\u{e1a5}", "\u{e1a6}", "\u{e1a7}", "\u{e1a8}", "\u{e1a9}", "\u{e1aa}", "\u{e1ab}", "\u{e1ac}", "\u{e1ad}", "\u{e1ae}", "\u{e1af}", "\u{e1b0}", "\u{e1b1}", "\u{e1b2}", "\u{e1b3}", "\u{e1b4}", "\u{e1b5}", "\u{e1b8}", "\u{e1b6}", "\u{e1b7}", "\u{e1b9}", "\u{e1ba}", "\u{e1bb}", "\u{e1be}", "\u{e1bf}", "\u{e1c0}", "\u{e1c1}", "\u{e1c2}", "\u{e1c3}", "\u{e1c8}", "\u{e1cd}", "\u{e1ce}", "\u{e1cf}", "\u{e1d0}", "\u{e1d8}", "\u{e1d9}", "\u{e1da}", "\u{e1db}", "\u{e1e0}", "\u{e1bc}", "\u{e1bd}", "\u{e1e1}", "\u{e1e2}", "\u{e226}", "\u{e227}", "\u{e228}", "\u{e229}", "\u{e22a}", "\u{e22b}", "\u{e22c}", "\u{e22d}", "\u{e22e}", "\u{e22f}", "\u{e230}", "\u{e231}", "\u{e232}", "\u{e233}", "\u{e234}", "\u{e235}", "\u{e236}", "\u{e237}", "\u{e238}", "\u{e239}", "\u{e23a}", "\u{e23b}", "\u{e23c}", "\u{e23d}", "\u{e23e}", "\u{e23f}", "\u{e240}", "\u{e241}", "\u{e242}", "\u{e243}", "\u{e244}", "\u{e245}", "\u{e246}", "\u{e247}", "\u{e248}", "\u{e249}", "\u{e24a}", "\u{e24b}", "\u{e24c}", "\u{e24d}", "\u{e24e}", "\u{e24f}", "\u{e250}", "\u{e251}", "\u{e252}", "\u{e253}", "\u{e254}", "\u{e25c}", "\u{e255}", "\u{e256}", "\u{e257}", "\u{e258}", "\u{e259}", "\u{e25a}", "\u{e25b}", "\u{e2bc}", "\u{e2bd}", "\u{e2be}", "\u{e2bf}", "\u{e2c0}", "\u{e2c1}", "\u{e2c2}", "\u{e2c3}", "\u{e2c4}", "\u{e2c6}", "\u{e2c7}", "\u{e2c8}", "\u{e2c9}", "\u{e307}", "\u{e308}", "\u{e30a}", "\u{e30b}", "\u{e30c}", "\u{e30d}", "\u{e335}", "\u{e30e}", "\u{e30f}", "\u{e310}", "\u{e311}", "\u{e312}", "\u{e313}", "\u{e314}", "\u{e315}", "\u{e316}", "\u{e317}", "\u{e318}", "\u{e31a}", "\u{e31b}", "\u{e31c}", "\u{e31d}", "\u{e31e}", "\u{e31f}", "\u{e320}", "\u{e321}", "\u{e322}", "\u{e323}", "\u{e324}", "\u{e325}", "\u{e326}", "\u{e327}", "\u{e336}", "\u{e328}", "\u{e329}", "\u{e32a}", "\u{e32b}", "\u{e32c}", "\u{e32d}", "\u{e32e}", "\u{e32f}", "\u{e330}", "\u{e331}", "\u{e332}", "\u{e333}", "\u{e334}", "\u{e39d}", "\u{e39e}", "\u{e39f}", "\u{e3a0}", "\u{e3a1}", "\u{e3a2}", "\u{e3a3}", "\u{e3a4}", "\u{e3a5}", "\u{e3a6}", "\u{e3a7}", "\u{e3a8}", "\u{e3a9}", "\u{e3aa}", "\u{e3ab}", "\u{e3ac}", "\u{e3ad}", "\u{e3ae}", "\u{e3af}", "\u{e3b0}", "\u{e3b1}", "\u{e3b2}", "\u{e3b3}", "\u{e3b4}", "\u{e3b5}", "\u{e3b6}", "\u{e431}", "\u{e3b7}", "\u{e3b8}", "\u{e3b9}", "\u{e3ba}", "\u{e3bb}", "\u{e3be}", "\u{e3bc}", "\u{e3bd}", "\u{e3bf}", "\u{e3c0}", "\u{e3c1}", "\u{e3c2}", "\u{e3c3}", "\u{e3c4}", "\u{e3c5}", "\u{e3c6}", "\u{e3c7}", "\u{e3c8}", "\u{e3c9}", "\u{e3ca}", "\u{e3cb}", "\u{e3cc}", "\u{e3cd}", "\u{e3ce}", "\u{e3cf}", "\u{e3d3}", "\u{e3d0}", "\u{e3d1}", "\u{e3d2}", "\u{e3d4}", "\u{e3d5}", "\u{e3d6}", "\u{e3d7}", "\u{e3d8}", "\u{e3d9}", "\u{e3da}", "\u{e3db}", "\u{e3dc}", "\u{e3dd}", "\u{e3de}", "\u{e3df}", "\u{e3e0}", "\u{e3e2}", "\u{e3e3}", "\u{e3e4}", "\u{e3e5}", "\u{e3e6}", "\u{e3e7}", "\u{e3e8}", "\u{e3e9}", "\u{e3ea}", "\u{e3eb}", "\u{e3ec}", "\u{e3ed}", "\u{e3ee}", "\u{e3f1}", "\u{e3f2}", "\u{e3f3}", "\u{e3f4}", "\u{e3f5}", "\u{e3f6}", "\u{e3f7}", "\u{e3f8}", "\u{e3f9}", "\u{e3fa}", "\u{e3fc}", "\u{e3fb}", "\u{e3fd}", "\u{e3fe}", "\u{e3ff}", "\u{e400}", "\u{e401}", "\u{e402}", "\u{e403}", "\u{e404}", "\u{e405}", "\u{e406}", "\u{e407}", "\u{e408}", "\u{e409}", "\u{e40a}", "\u{e40b}", "\u{e40c}", "\u{e40d}", "\u{e40e}", "\u{e40f}", "\u{e410}", "\u{e411}", "\u{e412}", "\u{e413}", "\u{e432}", "\u{e433}", "\u{e434}", "\u{e415}", "\u{e416}", "\u{e417}", "\u{e418}", "\u{e419}", "\u{e41a}", "\u{e41b}", "\u{e41c}", "\u{e41d}", "\u{e41e}", "\u{e41f}", "\u{e420}", "\u{e421}", "\u{e422}", "\u{e425}", "\u{e423}", "\u{e424}", "\u{e426}", "\u{e427}", "\u{e428}", "\u{e429}", "\u{e42a}", "\u{e42b}", "\u{e435}", "\u{e42c}", "\u{e42d}", "\u{e42e}", "\u{e436}", "\u{e430}", "\u{e52d}", "\u{e52e}", "\u{e52f}", "\u{e532}", "\u{e530}", "\u{e531}", "\u{e534}", "\u{e566}", "\u{e533}", "\u{e535}", "\u{e536}", "\u{e539}", "\u{e53a}", "\u{e53b}", "\u{e53c}", "\u{e53f}", "\u{e53d}", "\u{e53e}", "\u{e540}", "\u{e541}", "\u{e542}", "\u{e543}", "\u{e556}", "\u{e544}", "\u{e545}", "\u{e546}", "\u{e547}", "\u{e548}", "\u{e549}", "\u{e54a}", "\u{e54b}", "\u{e54c}", "\u{e54d}", "\u{e54e}", "\u{e54f}", "\u{e550}", "\u{e551}", "\u{e552}", "\u{e553}", "\u{e554}", "\u{e555}", "\u{e557}", "\u{e558}", "\u{e559}", "\u{e55b}", "\u{e55c}", "\u{e55d}", "\u{e55a}", "\u{e55e}", "\u{e55f}", "\u{e560}", "\u{e561}", "\u{e562}", "\u{e563}", "\u{e564}", "\u{e565}", "\u{e5c3}", "\u{e5c4}", "\u{e5c5}", "\u{e5c6}", "\u{e5c7}", "\u{e5c8}", "\u{e5c9}", "\u{e5ca}", "\u{e5cb}", "\u{e5cc}", "\u{e5cd}", "\u{e5ce}", "\u{e5cf}", "\u{e5d0}", "\u{e5d1}", "\u{e5d2}", "\u{e5d3}", "\u{e5d4}", "\u{e5d5}", "\u{e60e}", "\u{e630}", "\u{e631}", "\u{e632}", "\u{e633}", "\u{e634}", "\u{e635}", "\u{e636}", "\u{e637}", "\u{e60f}", "\u{e638}", "\u{e610}", "\u{e612}", "\u{e611}", "\u{e613}", "\u{e614}", "\u{e615}", "\u{e616}", "\u{e617}", "\u{e639}", "\u{e618}", "\u{e619}", "\u{e61a}", "\u{e63a}", "\u{e63b}", "\u{e61b}", "\u{e61c}", "\u{e61d}", "\u{e61e}", "\u{e61f}", "\u{e620}", "\u{e63c}", "\u{e623}", "\u{e624}", "\u{e625}", "\u{e626}", "\u{e627}", "\u{e628}", "\u{e629}", "\u{e62a}", "\u{e62b}", "\u{e62c}", "\u{e62d}", "\u{e62e}", "\u{e62f}", "\u{e63d}", "\u{e63e}", "\u{e7e9}", "\u{e7ee}", "\u{e7ef}", "\u{e7f0}", "\u{e7f1}", "\u{e7f2}", "\u{e7f3}", "\u{e7f4}", "\u{e7f7}", "\u{e7f5}", "\u{e7f6}", "\u{e7f8}", "\u{e7f9}", "\u{e7fa}", "\u{e7fb}", "\u{e7fc}", "\u{e7fd}", "\u{e7fe}", "\u{e7ff}", "\u{e800}", "\u{e801}", "\u{e80b}", "\u{e80c}", "\u{e80d}", "\u{e80e}", "\u{e834}", "\u{e835}", "\u{e909}", "\u{e837}", "\u{e836}", "\u{e838}", "\u{e83a}", "\u{e839}"]
